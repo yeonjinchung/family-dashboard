@@ -662,11 +662,11 @@
     <section class="card" style="--tint:#FFE7EF">
       <div class="card-head">
         <h2>💌 가족 한마디</h2>
-        <span class="hint">엄마·아이·지민이 한 줄씩</span>
+        <span class="hint">연진·로건·지민 한 줄씩</span>
       </div>
       <div class="nicks" id="nicks">
-        <button class="nick active" data-nick="엄마" type="button">👩 엄마</button>
-        <button class="nick" data-nick="아이" type="button">🧒 아이</button>
+        <button class="nick active" data-nick="연진" type="button">👩 연진</button>
+        <button class="nick" data-nick="로건" type="button">🧒 로건</button>
         <button class="nick" data-nick="지민" type="button">💛 지민</button>
       </div>
       <div class="post-form">
@@ -684,9 +684,9 @@
       <ul>
         <li>아이폰·아이패드 <b>사파리</b>에서 열고 <b>공유 → 홈 화면에 추가</b>를 누르면 앱처럼 전체 화면으로 열려요.</li>
         <li>알람 소리는 <b>화면을 켜둔 상태</b>에서 울려요. 소리가 안 나면 <b>소리 테스트</b>를 한 번 눌러주세요. (아이폰은 무음 모드 해제)</li>
-        <li><b>📅 가족 달력</b>은 날짜를 누른 뒤 시간·내용·담당(👩 엄마 / 🧒 아이 / 💛 지민 / 🏡 함께)을 골라 <b>＋ 일정 추가</b>를 누르면 돼요. 일정도 <b>이 기기 안에만</b> 저장돼요.</li>
+        <li><b>📅 가족 달력</b>은 날짜를 누른 뒤 시간·내용·담당(👩 연진 / 🧒 로건 / 💛 지민 / 🏡 함께)을 골라 <b>＋ 일정 추가</b>를 누르면 돼요. 일정도 <b>이 기기 안에만</b> 저장돼요.</li>
         <li>기록은 <b>이 기기 안에만</b> 저장돼요. 폰과 태블릿은 각각 따로 쌓여요.</li>
-        <li>실시간 채팅은 안 되지만, 한 기기에 두고 <b>엄마·아이가 번갈아</b> 한마디를 남길 수 있어요.</li>
+        <li>실시간 채팅은 안 되지만, 한 기기에 두고 <b>연진·로건이 번갈아</b> 한마디를 남길 수 있어요.</li>
       </ul>
     </details>
   </footer>
@@ -778,14 +778,14 @@
     { emoji: '🤗', text: '서로 10초 꼭 안아주기' },
     { emoji: '😆', text: '오늘 제일 웃겼던 일 말하기' },
     { emoji: '📖', text: '책 1권 같이 소리 내어 읽기' },
-    { emoji: '💆‍♀️', text: '아이가 엄마 어깨 안마 1분' },
+    { emoji: '💆‍♀️', text: '로건이 연진 어깨 안마 1분' },
     { emoji: '💛', text: '잠들기 전 칭찬 1가지씩' },
     { emoji: '✌️', text: '가위바위보 3판! 이긴 사람이 간식 고르기' },
     { emoji: '🎵', text: '좋아하는 노래 1곡 같이 부르기' },
     { emoji: '👏', text: '박수로 리듬 주고받기 1분' },
     { emoji: '🌟', text: '오늘 감사한 일 1가지씩 말하기' },
-    { emoji: '🎨', text: '엄마랑 그림 한 장 이어 그리기' },
-    { emoji: '🧑‍🏫', text: '아이가 오늘 배운 걸 선생님처럼 설명하기' },
+    { emoji: '🎨', text: '연진이랑 그림 한 장 이어 그리기' },
+    { emoji: '🧑‍🏫', text: '로건이 오늘 배운 걸 선생님처럼 설명하기' },
     { emoji: '🐻', text: '서로 닮은 점 1가지 찾아 말해주기' },
     { emoji: '🙌', text: '10까지 함께 크게 세고 하이파이브' },
     { emoji: '📸', text: '가족 사진 한 장 같이 찍기' },
@@ -842,6 +842,12 @@
     if (!Array.isArray(base.missions.custom)) { base.missions.custom = []; }
     if (!Array.isArray(base.missions.hidden)) { base.missions.hidden = []; }
     if (!Array.isArray(base.board.messages)) { base.board.messages = []; }
+    /* 예전 이름(엄마·로건이·아이)으로 남긴 한마디는 새 표기(연진·로건)로 옮긴다 */
+    var NICK_RENAME = { '엄마': '연진', '로건이': '로건', '아이': '로건' };
+    for (var mi = 0; mi < base.board.messages.length; mi++) {
+      var msg = base.board.messages[mi];
+      if (msg && NICK_RENAME[msg.nick]) { msg.nick = NICK_RENAME[msg.nick]; }
+    }
     if (typeof base.todos.custom !== 'object' || !base.todos.custom) { base.todos.custom = {}; }
     if (typeof base.todos.deleted !== 'object' || !base.todos.deleted) { base.todos.deleted = {}; }
     if (typeof base.todos.checked !== 'object' || !base.todos.checked) { base.todos.checked = {}; }
@@ -1781,7 +1787,7 @@
   /* =========================================================
      5. 가족 한마디
      ========================================================= */
-  var boardNick = '엄마';
+  var boardNick = '연진';
 
   function renderBoard() {
     elAll('.nick').forEach(function (b) {
@@ -1792,7 +1798,7 @@
     if (!state.board.messages.length) {
       var empty = document.createElement('li');
       empty.className = 'empty';
-      empty.textContent = '아직 남긴 한마디가 없어요. 엄마가 먼저 남겨볼까요? 💌';
+      empty.textContent = '아직 남긴 한마디가 없어요. 연진이 먼저 남겨볼까요? 💌';
       ul.appendChild(empty);
       return;
     }
@@ -1800,7 +1806,7 @@
       (function (m) {
         var li = document.createElement('li');
         li.className = 'msg';
-        var face = m.nick === '아이' ? '🧒' : (m.nick === '지민' ? '💛' : '👩');
+        var face = m.nick === '로건' ? '🧒' : (m.nick === '지민' ? '💛' : '👩');
         li.innerHTML =
           '<span class="msg-face">' + face + '</span>' +
           '<span class="msg-body">' +
@@ -1846,8 +1852,8 @@
      6. 가족 달력 & 일정
      ========================================================= */
   var CAL_TAGS = [
-    { key: 'mom', emoji: '👩', label: '엄마', cls: 't-mom' },
-    { key: 'kid', emoji: '🧒', label: '아이', cls: 't-kid' },
+    { key: 'mom', emoji: '👩', label: '연진', cls: 't-mom' },
+    { key: 'kid', emoji: '🧒', label: '로건', cls: 't-kid' },
     { key: 'jimin', emoji: '💛', label: '지민', cls: 't-jimin' },
     { key: 'all', emoji: '🏡', label: '함께', cls: 't-all' }
   ];
