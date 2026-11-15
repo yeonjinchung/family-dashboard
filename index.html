@@ -349,6 +349,61 @@
   .msg-time{font-size:11.5px;font-weight:700;color:#B4A7C4;}
   .msg-text{font-size:15px;font-weight:700;word-break:break-word;}
 
+  /* ---------- 쇼핑리스트 ---------- */
+  .shop-filters{display:flex;gap:7px;flex-wrap:wrap;}
+  .shop-filter{
+    min-height:44px;padding:0 14px;border:0;border-radius:14px;
+    background:#F6F2FC;color:#6E5C80;font-size:14.5px;font-weight:900;cursor:pointer;white-space:nowrap;
+  }
+  .shop-filter.active{background:linear-gradient(180deg,#7EDCC1,#5FD1B0);color:#fff;box-shadow:0 4px 0 #37B392;}
+  .shop-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:9px;}
+  @media (min-width:900px){ .shop-list{grid-template-columns:minmax(0,1fr) minmax(0,1fr);} }
+  .shop{
+    display:flex;align-items:center;gap:6px;
+    background:#FAF8FF;border:2px solid transparent;border-radius:18px;
+    padding:4px 6px 4px 4px;
+  }
+  .shop.done{background:#F0FBF6;border-color:#CBEFE1;}
+  .shop-main{
+    flex:1;min-width:0;display:flex;align-items:center;gap:10px;
+    background:transparent;border:0;padding:9px 6px;text-align:left;cursor:pointer;color:inherit;
+    border-radius:14px;
+  }
+  .shop .check{
+    flex:0 0 auto;width:34px;height:34px;border-radius:11px;
+    display:grid;place-items:center;
+    background:#fff;border:2.5px solid #DCD3EB;
+    color:#fff;font-size:18px;font-weight:900;
+  }
+  .shop.done .check{background:var(--mint);border-color:var(--mint);}
+  .shop-body{display:flex;flex-direction:column;gap:3px;min-width:0;}
+  .shop-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .shop-badge{
+    font-size:11.5px;font-weight:900;padding:2px 8px;border-radius:999px;
+    background:var(--mint-soft);color:#2E8A6F;white-space:nowrap;
+  }
+  .shop-badge.wish{background:var(--lemon-soft);color:#8A6200;}
+  .shop-text{font-size:16px;font-weight:800;line-height:1.25;word-break:break-word;}
+  .shop.done .shop-text{color:#3E8F76;text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:#A9E2CE;}
+  .shop-who{font-size:12.5px;font-weight:800;color:var(--ink-2);}
+  .shop-form{display:flex;flex-direction:column;gap:9px;border-top:1px dashed var(--line);padding-top:12px;}
+  .shop-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .shop-row > input{flex:1 1 150px;width:auto;min-width:120px;}
+  .shop-kind{display:flex;gap:6px;background:#F5F1FC;padding:5px;border-radius:15px;flex:0 0 auto;}
+  .kind-btn{
+    height:42px;padding:0 13px;border:0;border-radius:11px;background:transparent;
+    font-size:14.5px;font-weight:900;color:#6E5C80;cursor:pointer;white-space:nowrap;
+  }
+  .kind-btn.active{background:#fff;color:var(--ink);box-shadow:0 3px 10px rgba(122,101,150,.14);}
+  .shop-who-row{display:flex;gap:6px;flex-wrap:wrap;}
+  .who-btn{
+    min-height:44px;padding:0 13px;border:0;border-radius:13px;
+    background:#F6F2FC;color:#6E5C80;font-size:14px;font-weight:900;cursor:pointer;white-space:nowrap;
+  }
+  .who-btn.active{background:var(--tag);color:#fff;box-shadow:0 3px 0 var(--tag-shadow);}
+  .who-btn.t-jimin.active{color:#6B4B00;}
+  .shop-foot{display:flex;justify-content:flex-end;gap:8px;}
+
   /* ---------- 가족 달력 ---------- */
   .t-mom{--tag:#FF8FB1;--tag-shadow:#EC6F97;}
   .t-kid{--tag:#7BBFFF;--tag-shadow:#4E9FE8;}
@@ -606,7 +661,30 @@
       </div>
     </section>
 
-    <!-- 5. 타이머 & 알람 -->
+    <!-- 5. 쇼핑리스트 -->
+    <section class="card span2" style="--tint:#DEF7EE">
+      <div class="card-head">
+        <h2>🛒 쇼핑리스트</h2>
+        <span class="hint" id="shopHint">장 볼 것 · 부탁할 것</span>
+      </div>
+      <div class="shop-filters" id="shopFilters"></div>
+      <ul class="shop-list" id="shopList"></ul>
+      <div class="shop-form">
+        <div class="shop-row">
+          <input id="shopText" type="text" placeholder="살 것을 적어요 (예: 우유)" maxlength="40" aria-label="쇼핑 품목">
+          <button class="btn btn-mint small" id="addShopBtn" type="button">＋ 추가</button>
+        </div>
+        <div class="shop-row">
+          <div class="shop-kind" id="shopKinds"></div>
+          <div class="shop-who-row" id="shopWho"></div>
+        </div>
+      </div>
+      <div class="shop-foot">
+        <button class="btn btn-ghost small" id="clearDoneShop" type="button" hidden>🧺 완료 비우기</button>
+      </div>
+    </section>
+
+    <!-- 6. 타이머 & 알람 -->
     <section class="card" style="--tint:#DEF7EE">
       <div class="card-head">
         <h2>⏳ 공부 타이머</h2>
@@ -658,7 +736,7 @@
       </div>
     </section>
 
-    <!-- 6. 가족 한마디 -->
+    <!-- 7. 가족 한마디 -->
     <section class="card" style="--tint:#FFE7EF">
       <div class="card-head">
         <h2>💌 가족 한마디</h2>
@@ -685,6 +763,7 @@
         <li>아이폰·아이패드 <b>사파리</b>에서 열고 <b>공유 → 홈 화면에 추가</b>를 누르면 앱처럼 전체 화면으로 열려요.</li>
         <li>알람 소리는 <b>화면을 켜둔 상태</b>에서 울려요. 소리가 안 나면 <b>소리 테스트</b>를 한 번 눌러주세요. (아이폰은 무음 모드 해제)</li>
         <li><b>📅 가족 달력</b>은 날짜를 누른 뒤 시간·내용·담당(👩 연진 / 🧒 로건 / 💛 지민 / 🏡 함께)을 골라 <b>＋ 일정 추가</b>를 누르면 돼요. 일정도 <b>이 기기 안에만</b> 저장돼요.</li>
+        <li><b>🛒 쇼핑리스트</b>는 <b>장보기</b>와 <b>사주세요</b>로 나눠 담고, 부탁한 사람을 골라 둘 수 있어요. 산 것은 눌러서 체크하고 <b>완료 비우기</b>로 정리해요.</li>
         <li>기록은 <b>이 기기 안에만</b> 저장돼요. 폰과 태블릿은 각각 따로 쌓여요.</li>
         <li>실시간 채팅은 안 되지만, 한 기기에 두고 <b>연진·로건이 번갈아</b> 한마디를 남길 수 있어요.</li>
       </ul>
@@ -818,7 +897,8 @@
       timer: { preset: 25, running: false, endAt: 0, total: 0, remain: 0 },
       alarm: { mode: 'time', time: '21:00', minutes: 30, at: 0 },
       board: { messages: [] },
-      events: { items: [], view: '', selected: '' }
+      events: { items: [], view: '', selected: '' },
+      shopping: []
     };
   }
 
@@ -835,6 +915,7 @@
             base[k] = Object.assign(base[k], saved[k]);
           }
         }
+        if (saved && Array.isArray(saved.shopping)) { base.shopping = saved.shopping; }
       }
     } catch (e) {
       /* 저장소를 쓸 수 없어도 화면은 그대로 동작하게 둔다 */
@@ -854,6 +935,19 @@
     if (typeof base.todos.party !== 'object' || !base.todos.party) { base.todos.party = {}; }
     if (!base.events || typeof base.events !== 'object') { base.events = { items: [], view: '', selected: '' }; }
     if (!Array.isArray(base.events.items)) { base.events.items = []; }
+    /* 쇼핑리스트는 배열 그대로 받고, 항목 짝을 다시 맞춘다 */
+    if (!Array.isArray(base.shopping)) { base.shopping = []; }
+    base.shopping = base.shopping
+      .filter(function (x) { return x && typeof x.text === 'string' && x.text.trim(); })
+      .map(function (x) {
+        return {
+          id: String(x.id || ('s' + Math.random().toString(36).slice(2, 8))),
+          text: String(x.text).trim(),
+          kind: x.kind === 'wish' ? 'wish' : 'grocery',
+          who: (x.who === 'kid' || x.who === 'jimin') ? x.who : 'mom',
+          done: !!x.done
+        };
+      });
     if (DAYS.indexOf(base.todos.view) === -1) { base.todos.view = todayName(); }
     if (!base.stamps.size || base.stamps.size < 1) { base.stamps.size = 10; }
     return base;
@@ -2133,6 +2227,214 @@
   }
 
   /* =========================================================
+     7. 쇼핑리스트 (장보기 / 사주세요)
+     ========================================================= */
+  var SHOP_KINDS = [
+    { key: 'grocery', emoji: '🥬', label: '장보기' },
+    { key: 'wish', emoji: '🎁', label: '사주세요' }
+  ];
+  var SHOP_WHO = [
+    { key: 'mom', emoji: '👩', label: '연진', cls: 't-mom' },
+    { key: 'kid', emoji: '🧒', label: '로건', cls: 't-kid' },
+    { key: 'jimin', emoji: '💛', label: '지민', cls: 't-jimin' }
+  ];
+  var shopKind = 'grocery';
+  var shopWho = 'mom';
+  var shopFilter = 'all';
+
+  function shopItems() {
+    if (!Array.isArray(state.shopping)) state.shopping = [];
+    return state.shopping;
+  }
+
+  function shopKindInfo(key) {
+    for (var i = 0; i < SHOP_KINDS.length; i++) {
+      if (SHOP_KINDS[i].key === key) return SHOP_KINDS[i];
+    }
+    return SHOP_KINDS[0];
+  }
+
+  function shopWhoInfo(key) {
+    for (var i = 0; i < SHOP_WHO.length; i++) {
+      if (SHOP_WHO[i].key === key) return SHOP_WHO[i];
+    }
+    return SHOP_WHO[0];
+  }
+
+  function renderShopPickers() {
+    var kw = el('#shopKinds');
+    kw.innerHTML = '';
+    for (var i = 0; i < SHOP_KINDS.length; i++) {
+      (function (k) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'kind-btn' + (k.key === shopKind ? ' active' : '');
+        b.setAttribute('data-kind', k.key);
+        b.textContent = k.emoji + ' ' + k.label;
+        b.addEventListener('click', function () {
+          shopKind = k.key;
+          renderShopPickers();
+        });
+        kw.appendChild(b);
+      })(SHOP_KINDS[i]);
+    }
+
+    var ww = el('#shopWho');
+    ww.innerHTML = '';
+    for (var j = 0; j < SHOP_WHO.length; j++) {
+      (function (w) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'who-btn ' + w.cls + (w.key === shopWho ? ' active' : '');
+        b.setAttribute('data-who', w.key);
+        b.textContent = w.emoji + ' ' + w.label;
+        b.addEventListener('click', function () {
+          shopWho = w.key;
+          renderShopPickers();
+        });
+        ww.appendChild(b);
+      })(SHOP_WHO[j]);
+    }
+  }
+
+  function renderShopping() {
+    var items = shopItems();
+
+    var fWrap = el('#shopFilters');
+    fWrap.innerHTML = '';
+    var filters = [{ key: 'all', emoji: '🧺', label: '전체' }].concat(SHOP_KINDS);
+    for (var f = 0; f < filters.length; f++) {
+      (function (fl) {
+        var left = 0;
+        for (var q = 0; q < items.length; q++) {
+          if (items[q].done) continue;
+          if (fl.key !== 'all' && items[q].kind !== fl.key) continue;
+          left++;
+        }
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'shop-filter' + (fl.key === shopFilter ? ' active' : '');
+        b.setAttribute('data-kind', fl.key);
+        b.textContent = fl.emoji + ' ' + fl.label + ' ' + left;
+        b.addEventListener('click', function () {
+          shopFilter = fl.key;
+          renderShopping();
+        });
+        fWrap.appendChild(b);
+      })(filters[f]);
+    }
+
+    var list = el('#shopList');
+    list.innerHTML = '';
+    var shown = items.filter(function (x) {
+      return shopFilter === 'all' || x.kind === shopFilter;
+    });
+    shown.sort(function (a, b) {
+      return (a.done ? 1 : 0) - (b.done ? 1 : 0);
+    });
+
+    for (var i = 0; i < shown.length; i++) {
+      (function (it) {
+        var k = shopKindInfo(it.kind);
+        var w = shopWhoInfo(it.who);
+        var li = document.createElement('li');
+        li.className = 'shop ' + w.cls + (it.done ? ' done' : '');
+        li.setAttribute('data-id', it.id || '');
+
+        var main = document.createElement('button');
+        main.type = 'button';
+        main.className = 'shop-main';
+        main.setAttribute('aria-label', it.text + (it.done ? ' 완료 취소' : ' 샀어요 체크'));
+        main.innerHTML =
+          '<span class="check">' + (it.done ? '✓' : '') + '</span>' +
+          '<span class="shop-body">' +
+            '<span class="shop-top">' +
+              '<span class="shop-badge ' + k.key + '">' + k.emoji + ' ' + k.label + '</span>' +
+              '<span class="shop-who">' + w.emoji + ' ' + esc(w.label) + '</span>' +
+            '</span>' +
+            '<span class="shop-text">' + esc(it.text) + '</span>' +
+          '</span>';
+        main.addEventListener('click', function () { toggleShop(it.id); });
+
+        var del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'x-btn';
+        del.textContent = '✕';
+        del.setAttribute('aria-label', '장바구니에서 지우기');
+        del.addEventListener('click', function () { deleteShop(it.id); });
+
+        li.appendChild(main);
+        li.appendChild(del);
+        list.appendChild(li);
+      })(shown[i]);
+    }
+
+    if (!shown.length) {
+      var empty = document.createElement('li');
+      empty.className = 'empty';
+      empty.textContent = shopFilter === 'wish'
+        ? '아직 사주세요 목록이 비어 있어요. 아래에서 적어보세요!'
+        : (shopFilter === 'grocery'
+          ? '아직 장볼 것이 없어요. 아래에서 적어보세요!'
+          : '쇼핑리스트가 비어 있어요. 아래에서 적어보세요!');
+      list.appendChild(empty);
+    }
+
+    renderShopPickers();
+
+    var leftAll = 0, doneAll = 0;
+    for (var t = 0; t < items.length; t++) { if (items[t].done) doneAll++; else leftAll++; }
+    el('#shopHint').textContent = !items.length
+      ? '장 볼 것 · 부탁할 것'
+      : (leftAll ? '남은 ' + leftAll + '개' + (doneAll ? ' · 산 것 ' + doneAll + '개' : '')
+                 : '다 샀어요! 🎉');
+    el('#clearDoneShop').hidden = doneAll === 0;
+  }
+
+  function addShop() {
+    var input = el('#shopText');
+    var text = input.value.trim();
+    if (!text) { toast('살 것을 적어주세요 ✏️'); input.focus(); return; }
+    shopItems().unshift({
+      id: 's' + Date.now() + Math.floor(Math.random() * 1000),
+      text: text,
+      kind: shopKind,
+      who: shopWho,
+      done: false
+    });
+    save();
+    input.value = '';
+    renderShopping();
+    playChime();
+    toast(shopKind === 'wish' ? '사주세요에 담았어요 🎁' : '장보기에 담았어요 🛒');
+    input.focus();
+  }
+
+  function toggleShop(id) {
+    var items = shopItems();
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].id === id) { items[i].done = !items[i].done; break; }
+    }
+    save();
+    renderShopping();
+  }
+
+  function deleteShop(id) {
+    state.shopping = shopItems().filter(function (x) { return x.id !== id; });
+    save();
+    renderShopping();
+    toast('쇼핑리스트에서 지웠어요');
+  }
+
+  function clearDoneShop() {
+    var before = shopItems().length;
+    state.shopping = shopItems().filter(function (x) { return !x.done; });
+    save();
+    renderShopping();
+    if (before !== state.shopping.length) toast('산 것들을 정리했어요 🧺');
+  }
+
+  /* =========================================================
      헤더
      ========================================================= */
   function renderHeader(doneCount, totalCount) {
@@ -2257,6 +2559,12 @@
       if (e.key === 'Enter') { e.preventDefault(); addEvent(); }
     });
 
+    el('#addShopBtn').addEventListener('click', addShop);
+    el('#shopText').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); addShop(); }
+    });
+    el('#clearDoneShop').addEventListener('click', clearDoneShop);
+
     el('#closeCelebrate').addEventListener('click', closeHiFive);
     el('#celebrate').addEventListener('click', function (e) {
       if (e.target === el('#celebrate')) closeHiFive();
@@ -2284,6 +2592,7 @@
     renderAlarm();
     renderBoard();
     renderCalendar();
+    renderShopping();
     renderHeader();
     setInterval(tick, 250);
   }
