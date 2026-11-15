@@ -611,9 +611,9 @@
         <span class="hint">연진·로건·지민 한 줄씩</span>
       </div>
       <div class="nicks" id="nicks">
-        <button class="nick active" data-nick="연진" type="button">👩 연진</button>
-        <button class="nick" data-nick="로건" type="button">🧒 로건</button>
-        <button class="nick" data-nick="지민" type="button">💛 지민</button>
+        <button class="nick active" data-nick="연진" type="button">👩🏻 연진</button>
+        <button class="nick" data-nick="로건" type="button">👶🏻 로건</button>
+        <button class="nick" data-nick="지민" type="button">👦🏻 지민</button>
       </div>
       <div class="post-form">
         <input id="boardInput" type="text" placeholder="짧은 응원이나 메모를 남겨보세요" maxlength="60">
@@ -629,7 +629,7 @@
       <summary>💡 이렇게 쓰면 편해요</summary>
       <ul>
         <li>아이폰·아이패드 <b>사파리</b>에서 열고 <b>공유 → 홈 화면에 추가</b>를 누르면 앱처럼 전체 화면으로 열려요.</li>
-        <li><b>📅 가족 달력</b>은 날짜를 누른 뒤 시간·내용·담당(👩 연진 / 🧒 로건 / 💛 지민 / 🏡 함께)을 골라 <b>＋ 일정 추가</b>를 누르면 돼요. 일정도 <b>이 기기 안에만</b> 저장돼요.</li>
+        <li><b>📅 가족 달력</b>은 날짜를 누른 뒤 시간·내용·담당(👩🏻 연진 / 👶🏻 로건 / 👦🏻 지민 / 🏡 함께)을 골라 <b>＋ 일정 추가</b>를 누르면 돼요. 일정도 <b>이 기기 안에만</b> 저장돼요.</li>
         <li><b>🛒 쇼핑리스트</b>는 <b>장보기</b>와 <b>사주세요</b>로 나눠 담고, 부탁한 사람을 골라 둘 수 있어요. 산 것은 눌러서 체크하고 <b>완료 비우기</b>로 정리해요.</li>
         <li>기록은 <b>이 기기 안에만</b> 저장돼요. 폰과 태블릿은 각각 따로 쌓여요.</li>
         <li>실시간 채팅은 안 되지만, 한 기기에 두고 <b>연진·로건이 번갈아</b> 한마디를 남길 수 있어요.</li>
@@ -1452,7 +1452,7 @@
       (function (m) {
         var li = document.createElement('li');
         li.className = 'msg';
-        var face = m.nick === '로건' ? '🧒' : (m.nick === '지민' ? '💛' : '👩');
+        var face = m.nick === '로건' ? '👶🏻' : (m.nick === '지민' ? '👦🏻' : '👩🏻');
         li.innerHTML =
           '<span class="msg-face">' + face + '</span>' +
           '<span class="msg-body">' +
@@ -1498,9 +1498,9 @@
      6. 가족 달력 & 일정
      ========================================================= */
   var CAL_TAGS = [
-    { key: 'mom', emoji: '👩', label: '연진', cls: 't-mom' },
-    { key: 'kid', emoji: '🧒', label: '로건', cls: 't-kid' },
-    { key: 'jimin', emoji: '💛', label: '지민', cls: 't-jimin' },
+    { key: 'mom', emoji: '👩🏻', label: '연진', cls: 't-mom' },
+    { key: 'kid', emoji: '👶🏻', label: '로건', cls: 't-kid' },
+    { key: 'jimin', emoji: '👦🏻', label: '지민', cls: 't-jimin' },
     { key: 'all', emoji: '🏡', label: '함께', cls: 't-all' }
   ];
   var evTag = 'mom';
@@ -1786,9 +1786,9 @@
     { key: 'wish', emoji: '🎁', label: '사주세요' }
   ];
   var SHOP_WHO = [
-    { key: 'mom', emoji: '👩', label: '연진', cls: 't-mom' },
-    { key: 'kid', emoji: '🧒', label: '로건', cls: 't-kid' },
-    { key: 'jimin', emoji: '💛', label: '지민', cls: 't-jimin' }
+    { key: 'mom', emoji: '👩🏻', label: '연진', cls: 't-mom' },
+    { key: 'kid', emoji: '👶🏻', label: '로건', cls: 't-kid' },
+    { key: 'jimin', emoji: '👦🏻', label: '지민', cls: 't-jimin' }
   ];
   var shopKind = 'grocery';
   var shopWho = 'mom';
