@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="우리 가족">
-<meta name="description" content="우리 가족 대시보드 - 가족 미션, 할 일, 도장판, 타이머, 한마디 보드">
+<meta name="description" content="우리 가족 대시보드 - 가족 달력, 할 일, 가족 미션, 도장판, 쇼핑리스트, 한마디 보드">
 <title>🏡 우리 가족 대시보드</title>
 <style>
   :root{
@@ -90,7 +90,7 @@
   @media (min-width:760px){
     .grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;}
     .span2{grid-column:span 2;}
-    /* 오른쪽 칸이 타이머와 같이 높이 늘어나면 한마디 목록이 그 높이를 채우고 안에서 스크롤된다 */
+    /* 옆 칸이 더 높으면 한마디 목록이 그 높이를 채우고 안에서 스크롤된다 */
     .messages{flex:1 1 auto;min-height:0;max-height:none;}
   }
 
@@ -163,8 +163,6 @@
     appearance:none;
   }
   input:focus{border-color:#C9B6EF;background:#fff;}
-  .field{display:flex;flex-direction:column;gap:5px;flex:1 1 120px;min-width:110px;}
-  .field span{font-size:12.5px;font-weight:800;color:var(--ink-2);padding-left:2px;}
   .mini-row{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;}
   .mini-row .btn{flex:0 0 auto;}
   .mini-row > input{flex:1 1 140px;width:auto;min-width:120px;}
@@ -295,38 +293,6 @@
   .badge-box .badge{font-size:40px;line-height:1;}
   .badge-box p{flex:1;min-width:120px;margin:0;font-size:15px;font-weight:900;}
 
-  /* ---------- 타이머 ---------- */
-  .clock-wrap{position:relative;width:min(228px,62vw);aspect-ratio:1/1;min-height:180px;margin:0 auto;}
-  .ring{width:100%;height:100%;display:block;transform:rotate(-90deg);}
-  .ring-bg{fill:none;stroke:#F2ECFA;stroke-width:15;}
-  .ring-fg{fill:none;stroke:url(#ringGrad);stroke-width:15;stroke-linecap:round;transition:stroke-dashoffset .25s linear;}
-  .clock-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;pointer-events:none;}
-  #timerText{font-size:clamp(30px,8vw,40px);font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
-  #timerStateLabel{font-size:13px;font-weight:800;color:var(--ink-2);}
-  .presets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;}
-  .preset{
-    height:48px;border:0;border-radius:14px;background:#F6F2FC;
-    font-size:15.5px;font-weight:900;color:#6E5C80;cursor:pointer;
-  }
-  .preset.active{background:#EEE9FF;box-shadow:inset 0 0 0 2.5px var(--purple);color:#6A4FB8;}
-  .controls{display:flex;gap:8px;}
-  .controls .btn{flex:1;}
-
-  .alarm-box{border-top:1px dashed var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px;}
-  .alarm-head{font-size:15px;font-weight:900;}
-  .seg{display:flex;gap:6px;background:#F5F1FC;padding:5px;border-radius:15px;}
-  .seg-btn{
-    flex:1;height:44px;border:0;border-radius:11px;background:transparent;
-    font-size:15px;font-weight:900;color:#6E5C80;cursor:pointer;
-  }
-  .seg-btn.active{background:#fff;color:var(--ink);box-shadow:0 3px 10px rgba(122,101,150,.14);}
-  .alarm-state{
-    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-    background:var(--lemon-soft);border-radius:15px;padding:12px 14px;
-    font-size:14.5px;font-weight:900;color:#8A6200;
-  }
-  .alarm-state span{flex:1;min-width:140px;}
-
   /* ---------- 한마디 ---------- */
   .nicks{display:flex;gap:7px;flex-wrap:wrap;}
   .nick{
@@ -357,7 +323,6 @@
   }
   .shop-filter.active{background:linear-gradient(180deg,#7EDCC1,#5FD1B0);color:#fff;box-shadow:0 4px 0 #37B392;}
   .shop-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:9px;}
-  @media (min-width:900px){ .shop-list{grid-template-columns:minmax(0,1fr) minmax(0,1fr);} }
   .shop{
     display:flex;align-items:center;gap:6px;
     background:#FAF8FF;border:2px solid transparent;border-radius:18px;
@@ -484,7 +449,7 @@
   .guide ul{margin:10px 0 0;padding-left:18px;font-size:14px;font-weight:600;color:#6B5B7B;line-height:1.7;}
   .guide b{color:var(--ink);}
 
-  /* ---------- 축하 / 알람 / 토스트 ---------- */
+  /* ---------- 축하 / 토스트 ---------- */
   #fx{position:fixed;inset:0;z-index:70;pointer-events:none;overflow:hidden;}
   .confetti{position:fixed;left:0;top:0;will-change:transform,opacity;pointer-events:none;}
 
@@ -511,27 +476,6 @@
   @keyframes fiveWave{from{transform:rotate(-14deg) scale(1);}to{transform:rotate(14deg) scale(1.08);}}
   .celebrate h2{font-size:34px;font-weight:900;margin:8px 0 4px;letter-spacing:-.02em;color:var(--pink-deep);}
   .celebrate p{margin:0 0 18px;font-size:16px;font-weight:800;color:#6B5B7B;}
-
-  .alarm-banner{
-    position:fixed;left:10px;right:10px;top:calc(10px + env(safe-area-inset-top));z-index:85;
-    display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
-    padding:16px 18px;border-radius:22px;
-    background:linear-gradient(135deg,#FF9FBC,#FF7FA6);
-    color:#fff;
-    box-shadow:0 18px 44px rgba(255,110,150,.45);
-    transform:translateY(-165%);opacity:0;
-    transition:transform .38s cubic-bezier(.2,1.2,.4,1), opacity .28s ease;
-    pointer-events:none;
-  }
-  .alarm-banner.show{transform:translateY(0);opacity:1;pointer-events:auto;animation:bannerPulse 1.8s ease-in-out infinite;}
-  @keyframes bannerPulse{0%,100%{box-shadow:0 18px 44px rgba(255,110,150,.45);}50%{box-shadow:0 18px 60px rgba(255,110,150,.75);}}
-  .banner-text{display:flex;flex-direction:column;gap:2px;min-width:180px;flex:1;}
-  .banner-text b{font-size:19px;font-weight:900;}
-  .banner-text span{font-size:14.5px;font-weight:800;opacity:.95;}
-  .banner-btns{display:flex;gap:8px;flex-wrap:wrap;}
-  .banner-btns .btn{min-height:48px;padding:10px 16px;font-size:15px;border-radius:14px;}
-  .banner-btns .btn-pink{background:#fff;color:var(--pink-deep);--sc:rgba(255,255,255,.45);}
-  .banner-btns .btn-ghost{background:rgba(255,255,255,.24);color:#fff;--sc:rgba(0,0,0,.08);}
 
   .toast{
     position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));z-index:95;
@@ -566,67 +510,7 @@
 <main>
   <div class="grid">
 
-    <!-- 1. 가족 랜덤 미션 -->
-    <section class="card" style="--tint:#EEE9FF">
-      <div class="card-head">
-        <h2>🎲 오늘의 가족 미션</h2>
-        <span class="hint" id="missionState">아직 안 뽑았어요</span>
-      </div>
-      <div class="mission-card" id="missionCard">
-        <div class="mission-emoji" id="missionEmoji">🎁</div>
-        <p class="mission-text" id="missionText">버튼을 눌러 오늘의 미션을 뽑아보세요!</p>
-      </div>
-      <button class="btn btn-purple big" id="drawBtn">오늘의 가족 미션 뽑기</button>
-      <button class="btn btn-mint" id="missionDoneBtn">✅ 미션 완료! 도장 찍기</button>
-      <details class="more">
-        <summary>우리 가족 미션 목록 · 추가하기</summary>
-        <ul class="mission-list" id="missionList"></ul>
-        <div class="add-form">
-          <input id="newMissionEmoji" class="emoji-input" type="text" maxlength="4" value="🎈" aria-label="미션 이모지">
-          <input id="newMissionText" type="text" placeholder="새 미션 (예: 같이 줄넘기 20개)" maxlength="40">
-          <button class="btn btn-sky small" id="addMissionBtn">추가</button>
-        </div>
-      </details>
-    </section>
-
-    <!-- 2. 미션 도장판 -->
-    <section class="card" style="--tint:#FFF3D2">
-      <div class="card-head">
-        <h2>⭐ 미션 도장판</h2>
-        <span class="hint">칭찬 도장을 쾅!</span>
-      </div>
-      <div class="stamp-grid" id="stampGrid"></div>
-      <div class="stamp-foot">
-        <span class="stamp-total">모은 도장 <b id="stampTotal">0</b>개</span>
-        <button class="btn btn-lemon" id="stampBtn">도장 찍기</button>
-      </div>
-      <div class="badge-box" id="badgeBox" hidden>
-        <div class="badge">🏅</div>
-        <p>도장판 완성! 정말 대단해요!</p>
-        <button class="btn btn-pink small" id="newBoardBtn">새 도장판 시작</button>
-      </div>
-    </section>
-
-    <!-- 3. 오늘의 할 일 -->
-    <section class="card span2" style="--tint:#E4F2FF">
-      <div class="card-head">
-        <h2>✋ 오늘의 할 일</h2>
-        <span class="hint" id="todoHint">다 하면 하이파이브!</span>
-      </div>
-      <div class="tabs" id="tabs"></div>
-      <div class="progress">
-        <div class="progress-bar"><i id="progressFill"></i></div>
-        <span class="progress-text" id="progressText">0 / 0 완료</span>
-      </div>
-      <ul class="todo-list" id="todoList"></ul>
-      <div class="mini-row">
-        <input id="newTodoText" type="text" placeholder="할 일 추가 (예: 받아쓰기 연습)" maxlength="40">
-        <button class="btn btn-ghost small" id="addTodoBtn">＋ 추가</button>
-        <button class="btn btn-ghost small" id="restoreTodoBtn">기본 목록으로</button>
-      </div>
-    </section>
-
-    <!-- 4. 가족 달력 & 일정 -->
+    <!-- 1. 가족 달력 & 일정 -->
     <section class="card span2" style="--tint:#EEE9FF">
       <div class="card-head">
         <h2>📅 가족 달력 &amp; 일정</h2>
@@ -661,8 +545,68 @@
       </div>
     </section>
 
+    <!-- 2. 오늘의 할 일 -->
+    <section class="card span2" style="--tint:#E4F2FF">
+      <div class="card-head">
+        <h2>✋ 오늘의 할 일</h2>
+        <span class="hint" id="todoHint">다 하면 하이파이브!</span>
+      </div>
+      <div class="tabs" id="tabs"></div>
+      <div class="progress">
+        <div class="progress-bar"><i id="progressFill"></i></div>
+        <span class="progress-text" id="progressText">0 / 0 완료</span>
+      </div>
+      <ul class="todo-list" id="todoList"></ul>
+      <div class="mini-row">
+        <input id="newTodoText" type="text" placeholder="할 일 추가 (예: 받아쓰기 연습)" maxlength="40">
+        <button class="btn btn-ghost small" id="addTodoBtn">＋ 추가</button>
+        <button class="btn btn-ghost small" id="restoreTodoBtn">기본 목록으로</button>
+      </div>
+    </section>
+
+    <!-- 3. 가족 랜덤 미션 -->
+    <section class="card" style="--tint:#EEE9FF">
+      <div class="card-head">
+        <h2>🎲 오늘의 가족 미션</h2>
+        <span class="hint" id="missionState">아직 안 뽑았어요</span>
+      </div>
+      <div class="mission-card" id="missionCard">
+        <div class="mission-emoji" id="missionEmoji">🎁</div>
+        <p class="mission-text" id="missionText">버튼을 눌러 오늘의 미션을 뽑아보세요!</p>
+      </div>
+      <button class="btn btn-purple big" id="drawBtn">오늘의 가족 미션 뽑기</button>
+      <button class="btn btn-mint" id="missionDoneBtn">✅ 미션 완료! 도장 찍기</button>
+      <details class="more">
+        <summary>우리 가족 미션 목록 · 추가하기</summary>
+        <ul class="mission-list" id="missionList"></ul>
+        <div class="add-form">
+          <input id="newMissionEmoji" class="emoji-input" type="text" maxlength="4" value="🎈" aria-label="미션 이모지">
+          <input id="newMissionText" type="text" placeholder="새 미션 (예: 같이 줄넘기 20개)" maxlength="40">
+          <button class="btn btn-sky small" id="addMissionBtn">추가</button>
+        </div>
+      </details>
+    </section>
+
+    <!-- 4. 미션 도장판 -->
+    <section class="card" style="--tint:#FFF3D2">
+      <div class="card-head">
+        <h2>⭐ 미션 도장판</h2>
+        <span class="hint">칭찬 도장을 쾅!</span>
+      </div>
+      <div class="stamp-grid" id="stampGrid"></div>
+      <div class="stamp-foot">
+        <span class="stamp-total">모은 도장 <b id="stampTotal">0</b>개</span>
+        <button class="btn btn-lemon" id="stampBtn">도장 찍기</button>
+      </div>
+      <div class="badge-box" id="badgeBox" hidden>
+        <div class="badge">🏅</div>
+        <p>도장판 완성! 정말 대단해요!</p>
+        <button class="btn btn-pink small" id="newBoardBtn">새 도장판 시작</button>
+      </div>
+    </section>
+
     <!-- 5. 쇼핑리스트 -->
-    <section class="card span2" style="--tint:#DEF7EE">
+    <section class="card" style="--tint:#DEF7EE">
       <div class="card-head">
         <h2>🛒 쇼핑리스트</h2>
         <span class="hint" id="shopHint">장 볼 것 · 부탁할 것</span>
@@ -684,59 +628,7 @@
       </div>
     </section>
 
-    <!-- 6. 타이머 & 알람 -->
-    <section class="card" style="--tint:#DEF7EE">
-      <div class="card-head">
-        <h2>⏳ 공부 타이머</h2>
-        <span class="hint">끝나면 알려줄게요</span>
-      </div>
-      <div class="clock-wrap">
-        <svg class="ring" viewBox="0 0 200 200" aria-hidden="true">
-          <defs>
-            <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#FFC94D"></stop>
-              <stop offset="55%" stop-color="#FF8FB1"></stop>
-              <stop offset="100%" stop-color="#AC93FF"></stop>
-            </linearGradient>
-          </defs>
-          <circle class="ring-bg" cx="100" cy="100" r="86"></circle>
-          <circle class="ring-fg" id="ringFg" cx="100" cy="100" r="86"></circle>
-        </svg>
-        <div class="clock-text">
-          <span id="timerText">25:00</span>
-          <small id="timerStateLabel">준비</small>
-        </div>
-      </div>
-      <div class="presets" id="presets"></div>
-      <div class="mini-row">
-        <label class="field"><span>직접 입력(분)</span><input type="number" id="customMin" min="1" max="180" value="20" inputmode="numeric"></label>
-        <button class="btn btn-ghost small" id="customStartBtn">이 시간으로 시작</button>
-      </div>
-      <div class="controls">
-        <button class="btn btn-mint big" id="startBtn">▶ 시작</button>
-        <button class="btn btn-ghost big" id="resetTimerBtn">↺</button>
-      </div>
-
-      <div class="alarm-box">
-        <div class="alarm-head">🔔 태블릿 끄는 알람</div>
-        <div class="seg" id="alarmModes">
-          <button class="seg-btn active" data-mode="time" type="button">시각으로</button>
-          <button class="seg-btn" data-mode="after" type="button">N분 뒤</button>
-        </div>
-        <div class="mini-row">
-          <input type="time" id="alarmTime" value="21:00">
-          <input type="number" id="alarmMin" min="1" max="600" value="30" inputmode="numeric" hidden>
-          <button class="btn btn-sky small" id="alarmSetBtn">알람 켜기</button>
-        </div>
-        <div class="alarm-state" id="alarmState" hidden>
-          <span id="alarmStateText">⏰ 오늘 21:00에 알려드릴게요</span>
-          <button class="btn btn-ghost small" id="alarmOffBtn">끄기</button>
-        </div>
-        <button class="btn btn-ghost small" id="soundTestBtn">🔔 소리 테스트</button>
-      </div>
-    </section>
-
-    <!-- 7. 가족 한마디 -->
+    <!-- 6. 가족 한마디 -->
     <section class="card" style="--tint:#FFE7EF">
       <div class="card-head">
         <h2>💌 가족 한마디</h2>
@@ -761,7 +653,6 @@
       <summary>💡 이렇게 쓰면 편해요</summary>
       <ul>
         <li>아이폰·아이패드 <b>사파리</b>에서 열고 <b>공유 → 홈 화면에 추가</b>를 누르면 앱처럼 전체 화면으로 열려요.</li>
-        <li>알람 소리는 <b>화면을 켜둔 상태</b>에서 울려요. 소리가 안 나면 <b>소리 테스트</b>를 한 번 눌러주세요. (아이폰은 무음 모드 해제)</li>
         <li><b>📅 가족 달력</b>은 날짜를 누른 뒤 시간·내용·담당(👩 연진 / 🧒 로건 / 💛 지민 / 🏡 함께)을 골라 <b>＋ 일정 추가</b>를 누르면 돼요. 일정도 <b>이 기기 안에만</b> 저장돼요.</li>
         <li><b>🛒 쇼핑리스트</b>는 <b>장보기</b>와 <b>사주세요</b>로 나눠 담고, 부탁한 사람을 골라 둘 수 있어요. 산 것은 눌러서 체크하고 <b>완료 비우기</b>로 정리해요.</li>
         <li>기록은 <b>이 기기 안에만</b> 저장돼요. 폰과 태블릿은 각각 따로 쌓여요.</li>
@@ -779,17 +670,6 @@
     <h2>하이파이브!</h2>
     <p>오늘 할 일을 <b>모두</b> 끝냈어요!</p>
     <button class="btn btn-pink big" id="closeCelebrate" type="button">신난다!</button>
-  </div>
-</div>
-
-<div class="alarm-banner" id="banner" role="alert" aria-live="assertive">
-  <div class="banner-text">
-    <b id="bannerTitle">⏰ 시간 종료!</b>
-    <span id="bannerSub">이제 태블릿 끌 시간이에요!</span>
-  </div>
-  <div class="banner-btns">
-    <button class="btn btn-ghost" id="muteBtn" type="button">🔕 소리 끄기</button>
-    <button class="btn btn-pink" id="dismissBtn" type="button">확인</button>
   </div>
 </div>
 
@@ -894,8 +774,6 @@
       missions: { custom: [], hidden: [], picked: '', pickedEmoji: '', done: false, today: todayKey() },
       todos: { custom: {}, deleted: {}, checked: {}, party: {}, view: todayName(), viewDate: todayKey() },
       stamps: { filled: 0, total: 0, boards: 0, size: 10 },
-      timer: { preset: 25, running: false, endAt: 0, total: 0, remain: 0 },
-      alarm: { mode: 'time', time: '21:00', minutes: 30, at: 0 },
       board: { messages: [] },
       events: { items: [], view: '', selected: '' },
       shopping: []
@@ -908,7 +786,7 @@
       var raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         var saved = JSON.parse(raw);
-        var keys = ['missions', 'todos', 'stamps', 'timer', 'alarm', 'board', 'events'];
+        var keys = ['missions', 'todos', 'stamps', 'board', 'events'];
         for (var i = 0; i < keys.length; i++) {
           var k = keys[i];
           if (saved && saved[k] && typeof saved[k] === 'object') {
@@ -988,15 +866,6 @@
     return pad(d.getHours()) + ':' + pad(d.getMinutes());
   }
 
-  function timeText(ms) {
-    var total = Math.max(0, Math.ceil(ms / 1000));
-    var h = Math.floor(total / 3600);
-    var m = Math.floor((total % 3600) / 60);
-    var s = total % 60;
-    if (h > 0) return h + ':' + pad(m) + ':' + pad(s);
-    return pad(m) + ':' + pad(s);
-  }
-
   function timeAgo(ts) {
     var diff = Math.floor((Date.now() - ts) / 1000);
     if (diff < 60) return '방금';
@@ -1018,7 +887,6 @@
      소리 (Web Audio API — 외부 음원 없이 생성)
      ========================================================= */
   var actx = null;
-  var alarmSoundTimer = null;
 
   function ensureCtx() {
     if (!actx) {
@@ -1087,31 +955,6 @@
     tone(523.25, t + 0.5, 1.1, 0.10, 'sine');
     tone(659.25, t + 0.5, 1.1, 0.10, 'sine');
     tone(1046.5, t + 0.5, 1.1, 0.08, 'sine');
-  }
-
-  function alarmBurst() {
-    var ctx = ensureCtx();
-    if (!ctx) return;
-    var t = ctx.currentTime + 0.02;
-    var notes = [1046.5, 1318.51, 1567.98, 2093.0];
-    for (var i = 0; i < notes.length; i++) {
-      tone(notes[i], t + i * 0.13, 0.55, 0.22, 'sine');
-    }
-    tone(1046.5, t + 0.66, 0.9, 0.16);
-    tone(1567.98, t + 0.66, 0.9, 0.14);
-  }
-
-  function startAlarmSound() {
-    stopAlarmSound();
-    alarmBurst();
-    alarmSoundTimer = setInterval(alarmBurst, 2600);
-  }
-
-  function stopAlarmSound() {
-    if (alarmSoundTimer) {
-      clearInterval(alarmSoundTimer);
-      alarmSoundTimer = null;
-    }
   }
 
   /* iOS 사파리는 사용자 터치가 있어야 소리가 열린다 */
@@ -1191,12 +1034,6 @@
       state.todos.viewDate = k;
       state.todos.view = todayName();
       changed = true;
-    }
-    if (state.alarm.at && state.alarm.at < Date.now()) {
-      var missed = Date.now() - state.alarm.at < 5 * 60000;
-      state.alarm.at = 0;
-      changed = true;
-      if (missed) { setTimeout(fireAlarm, 700); }
     }
     if (changed) {
       pruneOld();
@@ -1622,261 +1459,6 @@
     renderStamps();
     toast('새 도장판 시작! 이번에도 화이팅 💪');
   }
-
-  /* =========================================================
-     4. 타이머
-     ========================================================= */
-  var rt = { endAt: 0, total: 0, remain: 0, running: false, finished: false };
-
-  function restoreTimer() {
-    var t = state.timer || {};
-    var preset = Number(t.preset) || 25;
-    rt.total = Number(t.total) || preset * 60000;
-    if (t.running && t.endAt) {
-      var left = Number(t.endAt) - Date.now();
-      if (left > 0) {
-        rt.endAt = Number(t.endAt);
-        rt.remain = left;
-        rt.running = true;
-      } else {
-        state.timer.running = false;
-        state.timer.endAt = 0;
-        save();
-        rt.remain = 0;
-      }
-    } else {
-      rt.remain = Number(t.remain) || 0;
-      rt.running = false;
-    }
-  }
-
-  function renderPresets() {
-    var wrap = el('#presets');
-    wrap.innerHTML = '';
-    var presets = [15, 25, 30, 45];
-    for (var i = 0; i < presets.length; i++) {
-      (function (m) {
-        var b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'preset' + (Number(state.timer.preset) === m ? ' active' : '');
-        b.textContent = m + '분';
-        b.addEventListener('click', function () { startTimer(m); });
-        wrap.appendChild(b);
-      })(presets[i]);
-    }
-  }
-
-  function renderTimer() {
-    var total = rt.total || (Number(state.timer.preset) || 25) * 60000;
-    var finished = rt.finished && !rt.running;
-    var paused = !rt.running && !finished && rt.remain > 0;
-    var remain = total;
-    if (rt.running) remain = Math.max(0, rt.endAt - Date.now());
-    else if (finished) remain = 0;
-    else if (paused) remain = rt.remain;
-    var ratio = total > 0 ? Math.max(0, Math.min(1, remain / total)) : 0;
-    var C = 2 * Math.PI * 86;
-    var fg = el('#ringFg');
-    fg.style.strokeDasharray = String(C);
-    fg.style.strokeDashoffset = String(C * (1 - ratio));
-    el('#timerText').textContent = timeText(remain);
-    var label = '준비';
-    if (rt.running) label = '공부 중';
-    else if (finished) label = '시간 끝! ⏰';
-    else if (paused) label = '잠깐 멈춤';
-    el('#timerStateLabel').textContent = label;
-    el('#startBtn').textContent = rt.running ? '⏸ 멈춤' : (paused ? '▶ 이어서' : '▶ 시작');
-  }
-
-  function startTimer(minutes) {
-    var m = Math.max(1, Math.floor(Number(minutes) || 25));
-    var ms = m * 60000;
-    rt.total = ms;
-    rt.remain = ms;
-    rt.endAt = Date.now() + ms;
-    rt.running = true;
-    rt.finished = false;
-    state.timer.preset = m;
-    state.timer.running = true;
-    state.timer.endAt = rt.endAt;
-    state.timer.total = ms;
-    state.timer.remain = ms;
-    save();
-    renderPresets();
-    renderTimer();
-    requestWakeLock();
-    toast(m + '분 타이머 시작! 집중해 볼까요 ⏳');
-  }
-
-  function pauseTimer() {
-    rt.remain = Math.max(0, rt.endAt - Date.now());
-    rt.running = false;
-    state.timer.running = false;
-    state.timer.endAt = 0;
-    state.timer.remain = rt.remain;
-    save();
-    renderTimer();
-    releaseWakeLock();
-  }
-
-  function resumeTimer() {
-    if (!rt.remain || rt.remain <= 0) {
-      startTimer(Number(state.timer.preset) || 25);
-      return;
-    }
-    rt.endAt = Date.now() + rt.remain;
-    rt.running = true;
-    rt.finished = false;
-    state.timer.running = true;
-    state.timer.endAt = rt.endAt;
-    save();
-    renderTimer();
-    requestWakeLock();
-  }
-
-  function resetTimer() {
-    rt.running = false;
-    rt.remain = 0;
-    rt.endAt = 0;
-    rt.finished = false;
-    rt.total = (Number(state.timer.preset) || 25) * 60000;
-    state.timer.running = false;
-    state.timer.endAt = 0;
-    state.timer.remain = 0;
-    save();
-    renderTimer();
-    releaseWakeLock();
-    toast('타이머를 처음으로 되돌렸어요');
-  }
-
-  function timerFinished() {
-    rt.running = false;
-    rt.remain = 0;
-    rt.finished = true;
-    state.timer.running = false;
-    state.timer.endAt = 0;
-    state.timer.remain = 0;
-    save();
-    renderTimer();
-    releaseWakeLock();
-    showBanner('⏰ 시간 종료!', '이제 태블릿 끌 시간이에요!');
-    startAlarmSound();
-    vibrate([300, 150, 300, 150, 500]);
-    confetti(50);
-  }
-
-  /* =========================================================
-     알람
-     ========================================================= */
-  function alarmWhenText(at) {
-    var d = new Date(at);
-    var now = new Date();
-    var hm = pad(d.getHours()) + ':' + pad(d.getMinutes());
-    if (d.toDateString() === now.toDateString()) return '오늘 ' + hm;
-    var tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    if (d.toDateString() === tomorrow.toDateString()) return '내일 ' + hm;
-    return (d.getMonth() + 1) + '월 ' + d.getDate() + '일 ' + hm;
-  }
-
-  function renderAlarm() {
-    var mode = state.alarm.mode;
-    elAll('.seg-btn').forEach(function (b) {
-      b.classList.toggle('active', b.getAttribute('data-mode') === mode);
-    });
-    el('#alarmTime').hidden = mode !== 'time';
-    el('#alarmMin').hidden = mode !== 'after';
-    if (document.activeElement !== el('#alarmTime')) el('#alarmTime').value = state.alarm.time;
-    if (document.activeElement !== el('#alarmMin')) el('#alarmMin').value = state.alarm.minutes;
-    var on = state.alarm.at && state.alarm.at > Date.now();
-    el('#alarmState').hidden = !on;
-    if (on) {
-      el('#alarmStateText').textContent = '⏰ ' + alarmWhenText(state.alarm.at) + '에 알려드릴게요';
-    }
-  }
-
-  function setAlarm() {
-    var at;
-    if (state.alarm.mode === 'time') {
-      var v = el('#alarmTime').value || state.alarm.time || '21:00';
-      state.alarm.time = v;
-      var parts = v.split(':');
-      var now = new Date();
-      var d = new Date(now.getFullYear(), now.getMonth(), now.getDate(),
-        Number(parts[0]) || 0, Number(parts[1]) || 0, 0, 0);
-      if (d.getTime() <= now.getTime()) d.setDate(d.getDate() + 1);
-      at = d.getTime();
-    } else {
-      var mins = Math.max(1, Math.floor(Number(el('#alarmMin').value) || 30));
-      state.alarm.minutes = mins;
-      at = Date.now() + mins * 60000;
-    }
-    state.alarm.at = at;
-    save();
-    renderAlarm();
-    playChime();
-    requestWakeLock();
-    toast('⏰ ' + alarmWhenText(at) + '에 알려드릴게요');
-  }
-
-  function clearAlarm(silent) {
-    state.alarm.at = 0;
-    save();
-    renderAlarm();
-    releaseWakeLock();
-    if (!silent) toast('알람을 껐어요');
-  }
-
-  function fireAlarm() {
-    state.alarm.at = 0;
-    save();
-    renderAlarm();
-    showBanner('⏰ 알람 시간이에요!', '이제 태블릿 끌 시간이에요!');
-    startAlarmSound();
-    vibrate([300, 150, 300, 150, 500]);
-  }
-
-  /* =========================================================
-     알람 배너
-     ========================================================= */
-  function showBanner(title, sub) {
-    el('#bannerTitle').textContent = title;
-    el('#bannerSub').textContent = sub;
-    el('#banner').classList.add('show');
-    document.body.classList.add('alarming');
-  }
-
-  function hideBanner() {
-    el('#banner').classList.remove('show');
-    document.body.classList.remove('alarming');
-    stopAlarmSound();
-  }
-
-  /* =========================================================
-     화면 잠금 방지 (지원 기기에서만)
-     ========================================================= */
-  var wakeLock = null;
-
-  function requestWakeLock() {
-    if (!('wakeLock' in navigator)) return;
-    try {
-      navigator.wakeLock.request('screen').then(function (lock) {
-        wakeLock = lock;
-      }).catch(function () {});
-    } catch (e) {}
-  }
-
-  function releaseWakeLock() {
-    if (wakeLock) {
-      try { wakeLock.release(); } catch (e) {}
-      wakeLock = null;
-    }
-  }
-
-  document.addEventListener('visibilitychange', function () {
-    if (document.visibilityState === 'visible' && (rt.running || state.alarm.at)) {
-      requestWakeLock();
-    }
-  });
 
   /* =========================================================
      5. 가족 한마디
@@ -2453,7 +2035,7 @@
   }
 
   /* =========================================================
-     시계 / 타이머 반복
+     시계 / 날짜 넘어감 반복
      ========================================================= */
   var lastDayCheck = 0;
 
@@ -2464,23 +2046,12 @@
       var c = clockLabel();
       if (clockEl.textContent !== c) clockEl.textContent = c;
     }
-    if (rt.running) {
-      if (now >= rt.endAt) {
-        timerFinished();
-      } else {
-        renderTimer();
-      }
-    }
-    if (state.alarm.at && now >= state.alarm.at) {
-      fireAlarm();
-    }
     if (now - lastDayCheck > 30000) {
       lastDayCheck = now;
       if (checkNewDay()) {
         renderMission();
         renderTodos();
         renderBoard();
-        renderAlarm();
         renderCalendar();
       }
     }
@@ -2507,37 +2078,6 @@
       if (stampNow()) toast('도장 쿵! ⭐');
     });
     el('#newBoardBtn').addEventListener('click', newStampBoard);
-
-    el('#startBtn').addEventListener('click', function () {
-      if (rt.running) { pauseTimer(); }
-      else { resumeTimer(); }
-    });
-    el('#resetTimerBtn').addEventListener('click', resetTimer);
-    el('#customStartBtn').addEventListener('click', function () {
-      var v = Math.floor(Number(el('#customMin').value) || 0);
-      if (v <= 0) { toast('분을 1분 이상 적어주세요'); return; }
-      startTimer(v);
-    });
-
-    elAll('.seg-btn').forEach(function (b) {
-      b.addEventListener('click', function () {
-        state.alarm.mode = b.getAttribute('data-mode');
-        save();
-        renderAlarm();
-      });
-    });
-    el('#alarmSetBtn').addEventListener('click', setAlarm);
-    el('#alarmOffBtn').addEventListener('click', function () { clearAlarm(false); });
-    el('#soundTestBtn').addEventListener('click', function () {
-      playChime();
-      toast('🔔 이 소리로 알려드려요');
-    });
-
-    el('#muteBtn').addEventListener('click', function () {
-      stopAlarmSound();
-      toast('소리를 껐어요');
-    });
-    el('#dismissBtn').addEventListener('click', hideBanner);
 
     elAll('.nick').forEach(function (b) {
       b.addEventListener('click', function () {
@@ -2570,10 +2110,7 @@
       if (e.target === el('#celebrate')) closeHiFive();
     });
     document.addEventListener('visibilitychange', function () {
-      if (!document.hidden) {
-        renderHeader();
-        renderAlarm();
-      }
+      if (!document.hidden) { renderHeader(); }
     });
   }
 
@@ -2582,14 +2119,10 @@
      ========================================================= */
   function init() {
     checkNewDay();
-    restoreTimer();
     bindEvents();
     renderMission();
     renderTodos();
     renderStamps();
-    renderPresets();
-    renderTimer();
-    renderAlarm();
     renderBoard();
     renderCalendar();
     renderShopping();
