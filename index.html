@@ -449,33 +449,9 @@
   .guide ul{margin:10px 0 0;padding-left:18px;font-size:14px;font-weight:600;color:#6B5B7B;line-height:1.7;}
   .guide b{color:var(--ink);}
 
-  /* ---------- 축하 / 토스트 ---------- */
+  /* ---------- 폭죽 / 토스트 ---------- */
   #fx{position:fixed;inset:0;z-index:70;pointer-events:none;overflow:hidden;}
   .confetti{position:fixed;left:0;top:0;will-change:transform,opacity;pointer-events:none;}
-
-  .celebrate{
-    position:fixed;inset:0;z-index:65;display:grid;place-items:center;
-    padding:20px;
-    background:rgba(74,59,87,.34);
-    opacity:0;visibility:hidden;pointer-events:none;
-    transition:opacity .25s ease, visibility 0s linear .3s;
-  }
-  .celebrate.show{
-    opacity:1;visibility:visible;pointer-events:auto;
-    -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
-    transition:opacity .25s ease, visibility 0s;
-  }
-  .celebrate-box{
-    width:min(420px,100%);text-align:center;
-    background:#fff;border-radius:32px;padding:30px 24px 26px;
-    box-shadow:0 30px 80px rgba(80,60,110,.32);
-    transform:scale(.82);transition:transform .38s cubic-bezier(.2,1.6,.4,1);
-  }
-  .celebrate.show .celebrate-box{transform:scale(1);}
-  .celebrate .five{font-size:82px;line-height:1;display:inline-block;animation:fiveWave .9s ease-in-out infinite alternate;}
-  @keyframes fiveWave{from{transform:rotate(-14deg) scale(1);}to{transform:rotate(14deg) scale(1.08);}}
-  .celebrate h2{font-size:34px;font-weight:900;margin:8px 0 4px;letter-spacing:-.02em;color:var(--pink-deep);}
-  .celebrate p{margin:0 0 18px;font-size:16px;font-weight:800;color:#6B5B7B;}
 
   .toast{
     position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));z-index:95;
@@ -503,7 +479,7 @@
   </div>
   <div class="pills">
     <span class="pill">⭐ <b id="hStamps">0개</b></span>
-    <span class="pill">✋ <b id="hTodo">0/0</b></span>
+    <span class="pill">✅ 할 일 <b id="hTodo">0/0 (0%)</b></span>
   </div>
 </header>
 
@@ -548,13 +524,13 @@
     <!-- 2. 오늘의 할 일 -->
     <section class="card span2" style="--tint:#E4F2FF">
       <div class="card-head">
-        <h2>✋ 오늘의 할 일</h2>
-        <span class="hint" id="todoHint">다 하면 하이파이브!</span>
+        <h2>✅ 로건's to do list</h2>
+        <span class="hint" id="todoHint">0/0 완료 · 0%</span>
       </div>
       <div class="tabs" id="tabs"></div>
       <div class="progress">
         <div class="progress-bar"><i id="progressFill"></i></div>
-        <span class="progress-text" id="progressText">0 / 0 완료</span>
+        <span class="progress-text" id="progressText">0/0 완료 · 0%</span>
       </div>
       <ul class="todo-list" id="todoList"></ul>
       <div class="mini-row">
@@ -664,15 +640,6 @@
 
 <div id="fx" aria-hidden="true"></div>
 
-<div class="celebrate" id="celebrate" aria-hidden="true">
-  <div class="celebrate-box">
-    <div class="five">✋</div>
-    <h2>하이파이브!</h2>
-    <p>오늘 할 일을 <b>모두</b> 끝냈어요!</p>
-    <button class="btn btn-pink big" id="closeCelebrate" type="button">신난다!</button>
-  </div>
-</div>
-
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -772,7 +739,7 @@
     return {
       version: 1,
       missions: { custom: [], hidden: [], picked: '', pickedEmoji: '', done: false, today: todayKey() },
-      todos: { custom: {}, deleted: {}, checked: {}, party: {}, view: todayName(), viewDate: todayKey() },
+      todos: { custom: {}, deleted: {}, checked: {}, stampedDate: '', view: todayName(), viewDate: todayKey() },
       stamps: { filled: 0, total: 0, boards: 0, size: 10 },
       board: { messages: [] },
       events: { items: [], view: '', selected: '' },
@@ -810,7 +777,9 @@
     if (typeof base.todos.custom !== 'object' || !base.todos.custom) { base.todos.custom = {}; }
     if (typeof base.todos.deleted !== 'object' || !base.todos.deleted) { base.todos.deleted = {}; }
     if (typeof base.todos.checked !== 'object' || !base.todos.checked) { base.todos.checked = {}; }
-    if (typeof base.todos.party !== 'object' || !base.todos.party) { base.todos.party = {}; }
+    if (typeof base.todos.stampedDate !== 'string') { base.todos.stampedDate = ''; }
+    /* 예전 저장본의 party(하이파이브 기록)는 더 쓰지 않는다 */
+    if (base.todos.party) { delete base.todos.party; }
     if (!base.events || typeof base.events !== 'object') { base.events = { items: [], view: '', selected: '' }; }
     if (!Array.isArray(base.events.items)) { base.events.items = []; }
     /* 쇼핑리스트는 배열 그대로 받고, 항목 짝을 다시 맞춘다 */
@@ -1016,8 +985,6 @@
   function pruneOld() {
     var keys = Object.keys(state.todos.checked).sort();
     while (keys.length > 14) { delete state.todos.checked[keys.shift()]; }
-    var pkeys = Object.keys(state.todos.party).sort();
-    while (pkeys.length > 14) { delete state.todos.party[pkeys.shift()]; }
   }
 
   function checkNewDay() {
@@ -1299,12 +1266,17 @@
 
     var pct = items.length ? Math.round((doneCount / items.length) * 100) : 0;
     el('#progressFill').style.width = pct + '%';
-    el('#progressText').textContent = doneCount + ' / ' + items.length + ' 완료';
-    el('#todoHint').textContent = (items.length && doneCount === items.length)
-      ? '오늘 할 일 완료! ✋'
-      : '다 하면 하이파이브!';
+    el('#progressText').textContent = doneCount + '/' + items.length + ' 완료 · ' + pct + '%';
+    el('#todoHint').textContent = todoHintText(items.length, doneCount, pct);
 
     renderHeader(doneCount, items.length);
+  }
+
+  function todoHintText(total, done, pct) {
+    if (!total) return '할 일을 추가해 보세요 · 0%';
+    if (done === total) return pct + '% 완료 · 도장 쾅! ⭐';
+    if (!done) return '0% · 다 하면 도장이 쾅!';
+    return pct + '% 달성 · 조금만 더! 💪';
   }
 
   function toggleTodo(id) {
@@ -1316,21 +1288,10 @@
     for (var i = 0; i < items.length; i++) {
       if (!map[items[i].id]) { allDone = false; break; }
     }
-    var partyKey = todayKey() + '-' + day;
-    if (allDone) {
-      if (!state.todos.party[partyKey]) {
-        state.todos.party[partyKey] = true;
-        save();
-        renderTodos();
-        renderStamps();
-        setTimeout(hiFive, 180);
-        return;
-      }
-    } else if (state.todos.party[partyKey]) {
-      delete state.todos.party[partyKey];
-    }
     save();
     renderTodos();
+    /* 100% 를 만든 순간 도장판에 도장 한 개 — 같은 날에는 한 번만 */
+    if (allDone) autoStampForTodos();
   }
 
   function deleteTodo(day, id) {
@@ -1355,7 +1316,6 @@
       title: text,
       time: ''
     });
-    delete state.todos.party[todayKey() + '-' + day];
     save();
     input.value = '';
     renderTodos();
@@ -1371,26 +1331,30 @@
   }
 
   /* =========================================================
-     하이파이브 축하
+     할 일 100% 달성 → 미션 도장판 자동 도장 (하루 한 번)
      ========================================================= */
-  var hiFiveTimer = null;
-
-  function hiFive() {
-    var c = el('#celebrate');
-    c.classList.add('show');
-    c.setAttribute('aria-hidden', 'false');
-    confetti(120);
+  function autoStampForTodos() {
+    if (state.todos.stampedDate === todayKey()) return false;  /* 오늘은 이미 찍었어요 */
+    var size = state.stamps.size || 10;
+    if (state.stamps.filled >= size) {
+      toast('도장판이 가득 찼어요! 새 도장판을 시작하면 오늘 도장을 찍을 수 있어요 🏅');
+      return false;
+    }
+    state.todos.stampedDate = todayKey();
+    state.stamps.filled += 1;
+    state.stamps.total += 1;
+    save();
+    renderStamps();
+    renderTodos();
+    animateStamp(state.stamps.filled - 1);
+    playThud();
     playFanfare();
-    vibrate([120, 70, 120, 70, 240]);
-    if (hiFiveTimer) clearTimeout(hiFiveTimer);
-    hiFiveTimer = setTimeout(closeHiFive, 6500);
-  }
-
-  function closeHiFive() {
-    var c = el('#celebrate');
-    c.classList.remove('show');
-    c.setAttribute('aria-hidden', 'true');
-    if (hiFiveTimer) { clearTimeout(hiFiveTimer); hiFiveTimer = null; }
+    confetti(120);
+    vibrate([90, 60, 90, 60, 200]);
+    toast(state.stamps.filled >= size
+      ? '🎉 100% 달성! 미션 도장판에 도장 쾅! · 도장판도 가득! 🏅'
+      : '🎉 100% 달성! 미션 도장판에 도장 쾅!');
+    return true;
   }
 
   /* =========================================================
@@ -1458,6 +1422,12 @@
     save();
     renderStamps();
     toast('새 도장판 시작! 이번에도 화이팅 💪');
+    /* 오늘 할 일을 다 끝냈는데 도장판이 가득 차서 못 찍었다면, 새 판에 바로 찍어 준다 */
+    var items = todoItems(state.todos.view || todayName());
+    var map = checkedMap();
+    var all = items.length > 0;
+    for (var i = 0; i < items.length; i++) { if (!map[items[i].id]) { all = false; break; } }
+    if (all) autoStampForTodos();
   }
 
   /* =========================================================
@@ -2019,18 +1989,23 @@
   /* =========================================================
      헤더
      ========================================================= */
+  function hTodoLabel(done, total) {
+    var pct = total ? Math.round((done / total) * 100) : 0;
+    return done + '/' + total + ' (' + pct + '%)';
+  }
+
   function renderHeader(doneCount, totalCount) {
     el('#dateText').textContent = dateLabel();
     el('#clock').textContent = clockLabel();
     el('#hStamps').textContent = state.stamps.total + '개';
     if (typeof doneCount === 'number' && typeof totalCount === 'number') {
-      el('#hTodo').textContent = doneCount + '/' + totalCount;
+      el('#hTodo').textContent = hTodoLabel(doneCount, totalCount);
     } else {
       var items = todoItems(state.todos.view || todayName());
       var map = checkedMap();
       var done = 0;
       for (var i = 0; i < items.length; i++) { if (map[items[i].id]) done++; }
-      el('#hTodo').textContent = done + '/' + items.length;
+      el('#hTodo').textContent = hTodoLabel(done, items.length);
     }
   }
 
@@ -2105,10 +2080,6 @@
     });
     el('#clearDoneShop').addEventListener('click', clearDoneShop);
 
-    el('#closeCelebrate').addEventListener('click', closeHiFive);
-    el('#celebrate').addEventListener('click', function (e) {
-      if (e.target === el('#celebrate')) closeHiFive();
-    });
     document.addEventListener('visibilitychange', function () {
       if (!document.hidden) { renderHeader(); }
     });
