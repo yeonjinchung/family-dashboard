@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="우리 가족">
-<meta name="description" content="우리 가족 대시보드 - 포켓몬 퀘스트, 가족 달력, D-Day, 쇼핑리스트, 한마디 보드">
+<meta name="description" content="우리 가족 대시보드 - 포켓몬 퀘스트, 가족 달력, 쇼핑리스트, 한마디 보드">
 <title>🏡 우리 가족 대시보드</title>
 <style>
   :root{
@@ -346,29 +346,6 @@
   .dex-list li .noimg{font-size:18px;line-height:26px;}
   .dex-list li.empty-dex{background:transparent;padding:6px 0;color:var(--ink-2);font-weight:700;}
 
-  /* ---------- D-Day ---------- */
-  .dday-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;}
-  .dday{
-    display:flex;align-items:center;gap:10px;
-    background:#FAF8FF;border-radius:16px;padding:9px 10px;
-  }
-  .dday-badge{
-    flex:0 0 auto;min-width:64px;text-align:center;
-    font-size:14.5px;font-weight:900;padding:7px 9px;border-radius:12px;
-    background:linear-gradient(180deg,#FFA8C2,#FF87AE);color:#fff;
-    font-variant-numeric:tabular-nums;
-  }
-  .dday.soon .dday-badge{background:linear-gradient(180deg,#FFD873,#FFC94D);color:#6B4B00;}
-  .dday.today .dday-badge{background:linear-gradient(180deg,#BFA9FF,#AC93FF);color:#fff;}
-  .dday.past .dday-badge{background:#EFE9F8;color:#8B7B99;}
-  .dday-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;}
-  .dday-text{font-size:15.5px;font-weight:800;word-break:break-word;}
-  .dday-date{font-size:12.5px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums;}
-  .dday-form{display:flex;flex-direction:column;gap:8px;border-top:1px dashed var(--line);padding-top:11px;}
-  .dday-row{display:flex;gap:8px;flex-wrap:wrap;}
-  .dday-row > input[type="text"]{flex:1 1 150px;min-width:120px;}
-  .dday-row > input[type="date"]{flex:0 0 150px;width:150px;min-height:48px;padding:10px 10px;font-size:15px;}
-
   /* ---------- 한마디 ---------- */
   .nicks{display:flex;gap:7px;flex-wrap:wrap;}
   .nick{
@@ -595,22 +572,6 @@
         </div>
       </section>
 
-      <!-- D-Day -->
-      <section class="card" style="--tint:#FFE7EF">
-        <div class="card-head">
-          <h2>⏳ D-Day</h2>
-          <span class="hint" id="ddayHint">기다리는 날</span>
-        </div>
-        <ul class="dday-list" id="ddayList"></ul>
-        <div class="dday-form">
-          <div class="dday-row">
-            <input type="text" id="ddayText" placeholder="무엇을 기다려요? (예: 현장학습)" maxlength="40" aria-label="D-Day 이름">
-            <input type="date" id="ddayDate" aria-label="D-Day 날짜">
-          </div>
-          <button class="btn btn-pink small" id="addDdayBtn" type="button">＋ D-Day 추가</button>
-        </div>
-      </section>
-
     </div>
 
     <!-- ============ 2단 (가운데 메인) ============ -->
@@ -739,7 +700,6 @@
         <li>아이폰·아이패드 <b>사파리</b>에서 열고 <b>공유 → 홈 화면에 추가</b>를 누르면 앱처럼 전체 화면으로 열려요.</li>
         <li><b>⚡ 포켓몬 키우기</b>는 로건이가 <b>파트너 고르기</b>로 스타팅 포켓몬을 고르고, <b>오늘의 퀘스트</b>를 체크할 때마다 포인트만큼 경험치가 쌓여요. 경험치가 차면 레벨업, Lv.5·Lv.10에서 진화하며 도감에 쏙!</li>
         <li><b>🥚 올클리어 알</b>은 오늘 퀘스트를 <b>모두</b> 체크하면 하루 한 번 부화해요. 새 포켓몬이 도감에 등록되고 보너스 경험치도 받아요.</li>
-        <li><b>⏳ D-Day</b>는 이름과 날짜를 넣으면 <b>D-N / D-Day / D+N</b>으로 자동 계산돼요.</li>
         <li><b>📅 가족 달력</b>은 날짜를 누른 뒤 시간·내용·담당(👩🏻 연진 / 👶🏻 로건 / 👦🏻 지민 / 🏡 함께)을 골라 <b>＋ 일정 추가</b>를 누르면 돼요.</li>
         <li><b>🛒 쇼핑리스트</b>는 <b>장보기</b>와 <b>사주세요</b>로 나눠 담고, 부탁한 사람을 골라 둘 수 있어요. 산 것은 눌러서 체크하고 <b>완료 비우기</b>로 정리해요.</li>
         <li>기록은 <b>이 기기 안에만</b> 저장돼요. 폰과 태블릿은 각각 따로 쌓여요. 포켓몬 그림이 안 보이면 인터넷 연결을 확인해 주세요.</li>
@@ -905,7 +865,6 @@
       version: 2,
       pokemon: { partner: '', level: 1, xp: 0, points: 0, dex: [], eggDate: '', eggPoke: 0 },
       quests: { date: todayKey(), done: {}, custom: [], deleted: {} },
-      ddays: [],
       board: { messages: [] },
       events: { items: [], view: '', selected: '' },
       shopping: []
@@ -925,7 +884,6 @@
             base[k] = Object.assign(base[k], saved[k]);
           }
         }
-        if (saved && Array.isArray(saved.ddays)) { base.ddays = saved.ddays; }
         if (saved && Array.isArray(saved.shopping)) { base.shopping = saved.shopping; }
       }
     } catch (e) {
@@ -959,17 +917,6 @@
         emoji: String(c.emoji || '⭐'),
         text: String(c.text).trim(),
         points: PT_CHOICES.indexOf(Number(c.points)) >= 0 ? Number(c.points) : 20
-      };
-    });
-
-    if (!Array.isArray(base.ddays)) base.ddays = [];
-    base.ddays = base.ddays.filter(function (d) {
-      return d && typeof d.text === 'string' && String(d.date || '').length === 10;
-    }).map(function (d) {
-      return {
-        id: String(d.id || ('d' + Math.random().toString(36).slice(2, 8))),
-        text: String(d.text).trim(),
-        date: String(d.date)
       };
     });
 
@@ -1640,103 +1587,11 @@
   }
 
   /* =========================================================
-     D-Day
+     날짜 도우미
      ========================================================= */
   function dateOf(str) {
     var p = String(str || '').split('-');
     return new Date(Number(p[0]) || 1970, (Number(p[1]) || 1) - 1, Number(p[2]) || 1);
-  }
-
-  function dayDiff(ds) {
-    var t = dateOf(ds), n = dateOf(todayKey());
-    var a = Date.UTC(t.getFullYear(), t.getMonth(), t.getDate());
-    var b = Date.UTC(n.getFullYear(), n.getMonth(), n.getDate());
-    return Math.round((a - b) / 86400000);
-  }
-
-  function ddayLabel(diff) {
-    if (diff === 0) return 'D-Day';
-    if (diff > 0) return 'D-' + diff;
-    return 'D+' + (-diff);
-  }
-
-  function renderDdays() {
-    var list = el('#ddayList');
-    list.innerHTML = '';
-    var items = (state.ddays || []).slice().sort(function (a, b) {
-      return a.date < b.date ? -1 : (a.date > b.date ? 1 : 0);
-    });
-    for (var i = 0; i < items.length; i++) {
-      (function (it) {
-        var diff = dayDiff(it.date);
-        var li = document.createElement('li');
-        li.className = 'dday' + (diff === 0 ? ' today' : (diff < 0 ? ' past' : (diff <= 7 ? ' soon' : '')));
-        li.setAttribute('data-id', it.id);
-
-        var badge = document.createElement('span');
-        badge.className = 'dday-badge';
-        badge.textContent = ddayLabel(diff);
-        li.appendChild(badge);
-
-        var body = document.createElement('span');
-        body.className = 'dday-body';
-        var text = document.createElement('span');
-        text.className = 'dday-text';
-        text.textContent = it.text;
-        body.appendChild(text);
-        var dt = dateOf(it.date);
-        var when = document.createElement('span');
-        when.className = 'dday-date';
-        when.textContent = (dt.getMonth() + 1) + '월 ' + dt.getDate() + '일 · ' +
-          it.date.slice(0, 4) + '년';
-        body.appendChild(when);
-        li.appendChild(body);
-
-        var del = document.createElement('button');
-        del.type = 'button';
-        del.className = 'x-btn';
-        del.textContent = '✕';
-        del.setAttribute('aria-label', 'D-Day 지우기');
-        del.addEventListener('click', function () { deleteDday(it.id); });
-        li.appendChild(del);
-
-        list.appendChild(li);
-      })(items[i]);
-    }
-    if (!items.length) {
-      var empty = document.createElement('li');
-      empty.className = 'empty';
-      empty.textContent = '기다리는 날을 적어보세요. D-N으로 세어드려요!';
-      list.appendChild(empty);
-    }
-    el('#ddayHint').textContent = items.length ? items.length + '개 기다리는 중' : '기다리는 날';
-  }
-
-  function addDday() {
-    var textInput = el('#ddayText');
-    var dateInput = el('#ddayDate');
-    var text = String(textInput.value || '').trim();
-    var ds = String(dateInput.value || '').trim();
-    if (!text) { toast('무엇을 기다리는지 적어주세요'); textInput.focus(); return; }
-    if (ds.length !== 10) { toast('날짜를 골라주세요 📅'); dateInput.focus(); return; }
-    state.ddays.push({
-      id: 'd' + Date.now() + Math.floor(Math.random() * 1000),
-      text: text,
-      date: ds
-    });
-    save();
-    textInput.value = '';
-    dateInput.value = '';
-    renderDdays();
-    playChime();
-    toast('D-Day를 추가했어요 (' + ddayLabel(dayDiff(ds)) + ')');
-  }
-
-  function deleteDday(id) {
-    state.ddays = state.ddays.filter(function (x) { return x.id !== id; });
-    save();
-    renderDdays();
-    toast('D-Day를 지웠어요');
   }
 
   /* =========================================================
@@ -2314,7 +2169,6 @@
     renderPokemon();
     renderQuests();
     renderEgg();
-    renderDdays();
     renderBoard();
     renderCalendar();
     renderShopping();
@@ -2356,14 +2210,6 @@
       if (e.key === 'Enter') { e.preventDefault(); addQuest(); }
     });
     el('#resetQuestsBtn').addEventListener('click', resetQuests);
-
-    el('#addDdayBtn').addEventListener('click', addDday);
-    el('#ddayDate').addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') { e.preventDefault(); addDday(); }
-    });
-    el('#ddayText').addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') { e.preventDefault(); addDday(); }
-    });
 
     elAll('.nick').forEach(function (b) {
       b.addEventListener('click', function () {
