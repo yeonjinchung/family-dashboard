@@ -90,6 +90,39 @@
     white-space:nowrap;
   }
   .pill b{font-weight:900;color:var(--wine);}
+  /* 실시간 연결 상태 · 가족 코드 변경 */
+  .pill.sync{font-size:13px;padding:7px 12px;}
+  .pill.sync.on{background:var(--mint-soft);color:#1E7A61;}
+  .pill.sync.wait{background:var(--lemon-soft);color:#8A6400;}
+  .pill.sync.off{background:#F3EAEE;color:var(--ink-2);}
+  button.pill{font-family:inherit;cursor:pointer;border:0;color:var(--ink);}
+  button.pill:hover{box-shadow:0 5px 16px rgba(125,29,63,.18);}
+
+  /* ---------- 가족 코드(입장) 화면 ---------- */
+  .gate{
+    position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
+    padding:20px;background:rgba(63,33,41,.45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  }
+  .gate-card{
+    width:100%;max-width:350px;background:#fff;border-radius:26px;padding:24px 22px 20px;
+    box-shadow:0 20px 60px rgba(94,20,48,.30);text-align:center;
+  }
+  .gate-emoji{font-size:42px;line-height:1;}
+  .gate-title{margin:10px 0 6px;font-size:19px;font-weight:900;color:var(--wine-deep);}
+  .gate-card p{margin:0 0 16px;font-size:13px;color:var(--ink-2);line-height:1.55;}
+  .gate-pin{
+    width:100%;box-sizing:border-box;text-align:center;letter-spacing:.45em;text-indent:.45em;
+    font-size:26px;font-weight:800;color:var(--wine-deep);padding:12px 10px;
+    border:2px solid var(--wine-tint);border-radius:16px;background:#FFF9FB;font-family:inherit;
+  }
+  .gate-pin:focus{outline:none;border-color:var(--wine-mid);}
+  .gate-btn{
+    width:100%;margin-top:12px;padding:13px;border:0;border-radius:16px;cursor:pointer;
+    background:linear-gradient(135deg,var(--wine-mid),var(--wine-deep));color:#fff;
+    font-size:15.5px;font-weight:800;font-family:inherit;
+  }
+  .gate-msg{min-height:18px;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--wine-mid);}
+  .gate-msg.err{color:#C22A4A;}
 
   /* ---------- 레이아웃 (1단 / 2단 / 3단) ---------- */
   main{max-width:1500px;margin:0 auto;padding:16px 14px 40px;}
@@ -588,6 +621,8 @@
     *{animation-duration:.001s !important;animation-iteration-count:1 !important;transition-duration:.001s !important;}
   }
 </style>
+<!-- 가족 화면 실시간 동기화 도구 (공개해도 되는 publishable key만 쓴다) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -600,6 +635,8 @@
     <span class="pill">📖 도감 <b id="hDex">0/151</b></span>
     <span class="pill">⭐ <b id="hLevel">Lv.1</b></span>
     <span class="pill">✅ 퀘스트 <b id="hQuest">0/0</b></span>
+    <span class="pill sync off" id="syncPill" role="status">⚪ 오프라인</span>
+    <button class="pill" id="codeBtn" type="button" title="가족 코드 바꾸기">🔒 코드</button>
   </div>
 </header>
 
@@ -787,11 +824,23 @@
         <li><b>🥚 올클리어 알</b>은 오늘 퀘스트를 <b>모두</b> 체크하면 하루 한 번 부화해요. 아직 도감에 없는 포켓몬이 등록되고 보너스 경험치도 받아요.</li>
         <li><b>📅 가족 달력</b>은 날짜를 누른 뒤 시간·내용·담당(👩🏻 연진 / 👶🏻 로건 / 👦🏻 지민 / 🏡 함께)을 골라 <b>＋ 일정 추가</b>를 누르면 돼요.</li>
         <li><b>🛒 쇼핑리스트</b>는 <b>장보기</b>와 <b>사주세요</b>로 나눠 담고, 부탁한 사람을 골라 둘 수 있어요. 산 것은 눌러서 체크하고 <b>완료 비우기</b>로 정리해요.</li>
-        <li>기록은 <b>이 기기 안에만</b> 저장돼요. 폰과 태블릿은 각각 따로 쌓여요. 포켓몬 그림이 안 보이면 인터넷 연결을 확인해 주세요.</li>
+        <li><b>🏡 가족 코드</b>는 처음 한 번만 넣으면 돼요. 이 기기에 기억해 두고, 같은 코드를 넣은 폰·태블릿은 달력·퀘스트·포켓몬·쇼핑리스트·한마디가 <b>실시간으로 함께</b> 바뀌어요. 화면 위 <b>🟢 실시간 연결됨</b> 표시로 연결 상태를 볼 수 있고, 코드를 바꾸려면 <b>🔒 코드</b>를 누르세요.</li>
       </ul>
     </details>
   </footer>
 </main>
+
+<div class="gate" id="gate" hidden>
+  <div class="gate-card">
+    <div class="gate-emoji">🏡</div>
+    <div class="gate-title">가족 코드를 넣어 주세요</div>
+    <p>네 자리 숫자를 넣으면 연진·로건·지민의 폰과 태블릿이<br>같은 화면을 실시간으로 함께 써요.</p>
+    <input class="gate-pin" id="gatePin" type="tel" inputmode="numeric" maxlength="4"
+           autocomplete="off" placeholder="••••" aria-label="가족 코드 네 자리">
+    <button class="gate-btn" id="gateBtn" type="button">들어가기</button>
+    <div class="gate-msg" id="gateMsg"></div>
+  </div>
+</div>
 
 <div id="fx" aria-hidden="true"></div>
 
@@ -1119,26 +1168,21 @@
     };
   }
 
-  function loadState() {
+  /* 저장본(이 기기 저장소 또는 가족 방 행)을 지금 화면이 쓰는 모양으로 다듬는다 */
+  function normalizeState(saved) {
     var base = defaults();
     var hadRoutines = false;
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        var saved = JSON.parse(raw);
-        hadRoutines = !!(saved && saved.quests && typeof saved.quests === 'object'
-          && saved.quests.routines && typeof saved.quests.routines === 'object');
-        var objs = ['pokemon', 'quests', 'board', 'events'];
-        for (var i = 0; i < objs.length; i++) {
-          var k = objs[i];
-          if (saved && saved[k] && typeof saved[k] === 'object') {
-            base[k] = Object.assign(base[k], saved[k]);
-          }
+    if (saved && typeof saved === 'object') {
+      hadRoutines = !!(saved.quests && typeof saved.quests === 'object'
+        && saved.quests.routines && typeof saved.quests.routines === 'object');
+      var objs = ['pokemon', 'quests', 'board', 'events'];
+      for (var i = 0; i < objs.length; i++) {
+        var k = objs[i];
+        if (saved[k] && typeof saved[k] === 'object') {
+          base[k] = Object.assign(base[k], saved[k]);
         }
-        if (saved && Array.isArray(saved.shopping)) { base.shopping = saved.shopping; }
       }
-    } catch (e) {
-      /* 저장소를 쓸 수 없어도 화면은 그대로 동작하게 둔다 */
+      if (Array.isArray(saved.shopping)) { base.shopping = saved.shopping; }
     }
 
     /* 예전 저장본(v3 이하)은 파트너가 'fire' 같은 키였고 레벨·경험치가 한 벌뿐이었다.
@@ -1276,10 +1320,281 @@
 
   var state = loadState();
 
-  function save() {
+  function saveLocal() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch (e) {}
+  }
+
+  /* 기기에 먼저 저장하고, 가족 방에 연결돼 있으면 다른 기기로도 보낸다 */
+  function save() {
+    saveLocal();
+    queuePush();
+  }
+
+  function loadState() {
+    var saved = null;
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) saved = JSON.parse(raw);
+    } catch (e) {
+      /* 저장소를 쓸 수 없어도 화면은 그대로 동작하게 둔다 */
+    }
+    return normalizeState(saved);
+  }
+
+  /* =========================================================
+     가족 실시간 동기화 (Supabase)
+     - 가족 코드(네 자리)는 이 기기에만 두고, 서버에는 SHA-256 해시만 간다.
+     - 공개 페이지에 들어가는 키는 publishable key(anon) 뿐이다.
+     ========================================================= */
+  var SB_URL = 'https://bbpbihsfvhtpzmpedquo.supabase.co';
+  var SB_KEY = 'sb_publishable_qPGbg_lPx-qUAtKDVFp9lw_PFu2zn6P';
+  var ROOM_SALT = 'family-dashboard-v1:';
+  var PIN_KEY = STORAGE_KEY + '-pin';
+  var sbClient = null, roomKey = '', roomChan = null, pushTimer = 0, applyingRemote = false, syncMode = '';
+
+  function sha256Hex(text) {
+    var c = window.crypto || null;
+    if (!c || !c.subtle || typeof TextEncoder === 'undefined') {
+      return Promise.reject(new Error('NO_CRYPTO'));
+    }
+    return c.subtle.digest('SHA-256', new TextEncoder().encode(text)).then(function (buf) {
+      var bytes = new Uint8Array(buf), out = '', i;
+      for (i = 0; i < bytes.length; i++) out += ('0' + bytes[i].toString(16)).slice(-2);
+      return out;
+    });
+  }
+
+  function savedPin() {
+    try { return localStorage.getItem(PIN_KEY) || ''; } catch (e) { return ''; }
+  }
+  function rememberPin(pin) {
+    try { localStorage.setItem(PIN_KEY, pin); } catch (e) {}
+  }
+  function forgetPin() {
+    try { localStorage.removeItem(PIN_KEY); } catch (e) {}
+  }
+
+  function setSync(mode) {
+    syncMode = mode;
+    var p = el('#syncPill');
+    if (!p) return;
+    if (mode === 'on') {
+      p.textContent = '🟢 실시간 연결됨';
+      p.className = 'pill sync on';
+    } else if (mode === 'wait') {
+      p.textContent = '🟠 연결 중';
+      p.className = 'pill sync wait';
+    } else {
+      p.textContent = '⚪ 오프라인';
+      p.className = 'pill sync off';
+    }
+  }
+
+  function haveLib() {
+    return !!(window.supabase && typeof window.supabase.createClient === 'function');
+  }
+
+  function sb() {
+    if (!sbClient && haveLib()) {
+      try {
+        sbClient = window.supabase.createClient(SB_URL, SB_KEY, {
+          auth: { persistSession: false, autoRefreshToken: false },
+          realtime: { params: { eventsPerSecond: 5 } }
+        });
+      } catch (e) { sbClient = null; }
+    }
+    return sbClient;
+  }
+
+  /* 방 하나를 읽어 온다 (없으면 NOROOM) */
+  function fetchRoom() {
+    var c = sb();
+    if (!c) return Promise.reject(new Error('NO_LIB'));
+    return c.from('dashboard_rooms')
+      .select('room_key,state,updated_at')
+      .eq('room_key', roomKey)
+      .maybeSingle()
+      .then(function (res) {
+        if (res && res.error) throw new Error('FETCH');
+        if (!res || !res.data) throw new Error('NOROOM');
+        return res.data;
+      });
+  }
+
+  function isBlankState(s) {
+    if (!s || typeof s !== 'object') return true;
+    var p = s.pokemon || {};
+    if (p.partner) return false;
+    if (Number(p.points) > 0) return false;
+    if (p.dex && p.dex.length) return false;
+    var q = s.quests || {};
+    if (q.done && Object.keys(q.done).length) return false;
+    if (s.events && s.events.items && s.events.items.length) return false;
+    if (s.shopping && s.shopping.length) return false;
+    if (s.board && s.board.messages && s.board.messages.length) return false;
+    return true;
+  }
+
+  /* 다른 기기가 바꾼 내용을 화면에 반영한다 (다시 서버로 되보내지 않는다) */
+  function applyRemote(remote) {
+    if (!remote || typeof remote !== 'object') return;
+    applyingRemote = true;
+    try {
+      state = normalizeState(remote);
+      renderAll();
+      saveLocal();
+    } catch (e) {
+      /* 이상한 저장본이 와도 화면은 살아 있게 둔다 */
+    } finally {
+      applyingRemote = false;
+    }
+  }
+
+  function pushNow() {
+    if (!roomKey) return;
+    var c = sb();
+    if (!c) return;
+    var snapshot;
+    try { snapshot = JSON.parse(JSON.stringify(state)); } catch (e) { return; }
+    try {
+      var q = c.from('dashboard_rooms')
+        .update({ state: snapshot, updated_at: new Date().toISOString() })
+        .eq('room_key', roomKey);
+      var done = q.then(function (res) {
+        if (res && res.error) { setSync('off'); return; }
+        if (syncMode !== 'on') setSync('on');
+      });
+      if (done && done.catch) done.catch(function () { setSync('off'); });
+    } catch (e) {
+      setSync('off');
+    }
+  }
+
+  function queuePush() {
+    if (applyingRemote || !roomKey) return;
+    if (pushTimer) clearTimeout(pushTimer);
+    pushTimer = setTimeout(function () { pushTimer = 0; pushNow(); }, 350);
+  }
+
+  function watchRoom() {
+    var c = sb();
+    if (!c || roomChan || !roomKey) return;
+    try {
+      roomChan = c.channel('family-room-' + roomKey.slice(0, 16))
+        .on('postgres_changes',
+          { event: '*', schema: 'public', table: 'dashboard_rooms', filter: 'room_key=eq.' + roomKey },
+          function (payload) {
+            var next = payload && payload.new ? payload.new.state : null;
+            if (!next) return;
+            if (JSON.stringify(next) === JSON.stringify(state)) return;
+            applyRemote(next);
+            setSync('on');
+          })
+        .subscribe(function (status) {
+          if (status === 'SUBSCRIBED') setSync('on');
+          else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') setSync('off');
+        });
+    } catch (e) {
+      setSync('off');
+    }
+  }
+
+  /* 가족 코드로 방에 들어간다 */
+  function joinRoom(pin) {
+    return sha256Hex(ROOM_SALT + pin).then(function (hash) {
+      roomKey = hash;
+      if (!sb()) throw new Error('NO_LIB');
+      return fetchRoom().then(function (row) {
+        var remote = row && row.state ? row.state : null;
+        if (isBlankState(remote) && !isBlankState(state)) {
+          /* 이 기기에 이미 쌓인 기록이 있으면 그걸 방의 첫 내용으로 올린다 */
+          saveLocal();
+          pushNow();
+        } else {
+          applyRemote(remote);
+        }
+        watchRoom();
+        setSync('on');
+      });
+    });
+  }
+
+  function gateMsg(text, isErr) {
+    var m = el('#gateMsg');
+    if (!m) return;
+    m.textContent = text || '';
+    m.className = 'gate-msg' + (isErr ? ' err' : '');
+  }
+
+  function showGate(on, msg) {
+    var g = el('#gate');
+    if (g) g.hidden = !on;
+    if (on) {
+      gateMsg(msg || '', !!msg);
+      var input = el('#gatePin');
+      if (input && !msg) { input.value = ''; }
+      if (input) { try { input.focus(); } catch (e) {} }
+    }
+  }
+
+  function tryJoin(pin) {
+    return joinRoom(pin).then(function () {
+      rememberPin(pin);
+      showGate(false);
+      gateMsg('');
+      toast('가족 화면과 연결됐어요 🟢');
+    }).catch(function (err) {
+      var code = (err && err.message) || '';
+      if (code === 'NOROOM') {
+        forgetPin();
+        showGate(true, '코드가 맞지 않아요. 다시 확인해 주세요.');
+      } else if (code === 'NO_CRYPTO') {
+        showGate(true, '이 브라우저에서는 실시간 연결을 쓸 수 없어요.');
+      } else if (code === 'NO_LIB') {
+        showGate(true, '연결 도구를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.');
+      } else {
+        showGate(true, '지금은 연결하지 못했어요. 잠시 뒤 다시 해 주세요.');
+      }
+    });
+  }
+
+  function submitGate() {
+    var input = el('#gatePin');
+    var v = (input ? String(input.value || '') : '').replace(/[^0-9]/g, '');
+    if (v.length !== 4) { gateMsg('네 자리 숫자를 넣어 주세요.', true); return; }
+    gateMsg('확인 중…');
+    tryJoin(v);
+  }
+
+  function openGate() {
+    showGate(true);
+    var input = el('#gatePin');
+    if (input) {
+      input.value = savedPin();
+      try { input.focus(); input.select(); } catch (e) {}
+    }
+  }
+
+  /* 화면을 열 때: 저장된 코드가 있으면 바로 연결, 없으면 코드를 묻는다 */
+  function initSync() {
+    if (!haveLib()) { setSync('off'); showGate(!savedPin()); return; }
+    var pin = savedPin();
+    if (!pin) { setSync('off'); showGate(true); return; }
+    setSync('wait');
+    joinRoom(pin).then(function () {
+      showGate(false);
+    }).catch(function (err) {
+      var code = (err && err.message) || '';
+      if (code === 'NOROOM') {
+        forgetPin();
+        showGate(true, '코드가 맞지 않아요. 다시 확인해 주세요.');
+      } else {
+        showGate(false);
+        setSync('off');
+      }
+    });
   }
 
   /* =========================================================
@@ -2950,8 +3265,29 @@
     el('#clearDoneShop').addEventListener('click', clearDoneShop);
 
     document.addEventListener('visibilitychange', function () {
-      if (!document.hidden) { renderHeader(); }
+      if (!document.hidden) {
+        renderHeader();
+        if (roomKey) {
+          fetchRoom().then(function (row) {
+            var remote = row && row.state ? row.state : null;
+            if (remote && JSON.stringify(remote) !== JSON.stringify(state)) applyRemote(remote);
+            setSync('on');
+          }).catch(function () {});
+        }
+      } else if (roomKey) {
+        /* 창을 닫기 직전에 고친 것도 잃지 않게 바로 보낸다 */
+        pushNow();
+      }
     });
+
+    var gateBtn = el('#gateBtn');
+    if (gateBtn) gateBtn.addEventListener('click', submitGate);
+    var gatePin = el('#gatePin');
+    if (gatePin) gatePin.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); submitGate(); }
+    });
+    var codeBtn = el('#codeBtn');
+    if (codeBtn) codeBtn.addEventListener('click', openGate);
   }
 
   /* =========================================================
@@ -2961,9 +3297,10 @@
     checkNewDay();
     syncEvolution(true);
     pruneBoard();
-    save();
+    saveLocal();
     bindEvents();
     renderAll();
+    initSync();
     setInterval(tick, 250);
   }
 
