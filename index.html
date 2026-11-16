@@ -2850,7 +2850,8 @@
     if (state.quests.date !== k) {
       /* 새 날: 오늘 체크와 '오늘만' 퀘스트만 비운다.
          요일별 루틴은 그대로 남아 오늘 요일 루틴이 자동으로 뜬다. */
-      var wasToday = isTodayView();
+      var prevDate = state.quests.date;
+      var wasToday = !!prevDate && viewDay === WEEK_LABEL[dateOf(prevDate).getDay()];
       state.quests.date = k;
       state.quests.done = {};
       state.quests.today = [];
