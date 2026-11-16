@@ -798,43 +798,43 @@
   /* 로건이 요일별 방과후 스케줄 = 오늘의 퀘스트 기본값 */
   var SCHEDULE = {
     '월': [
-      { id: 'mon-school', emoji: '🏫', title: '학교', time: '9:00~12:50', points: 15 },
-      { id: 'mon-eng', emoji: '📚', title: '써니 잉글리시', time: '13:20~14:10', points: 20 }
+      { id: 'mon-school', emoji: '🏫', title: '학교', time: '9:00~12:50', points: 10 },
+      { id: 'mon-eng', emoji: '📚', title: '써니 잉글리시', time: '13:20~14:10', points: 10 }
     ],
     '화': [
-      { id: 'tue-school', emoji: '🏫', title: '학교 · 방과후 컴퓨터', time: '9:00~14:30', points: 25 },
-      { id: 'tue-eng', emoji: '📚', title: '써니 잉글리시', time: '15:00~15:50', points: 20 }
+      { id: 'tue-school', emoji: '🏫', title: '학교 · 방과후 컴퓨터', time: '9:00~14:30', points: 10 },
+      { id: 'tue-eng', emoji: '📚', title: '써니 잉글리시', time: '15:00~15:50', points: 10 }
     ],
     '수': [
-      { id: 'wed-school', emoji: '🏫', title: '학교', time: '9:00~13:00', points: 15 },
-      { id: 'wed-art', emoji: '🎨', title: '미술 학원', time: '14:20~15:40', points: 20 },
-      { id: 'wed-swim', emoji: '🏊', title: '수영', time: '18:20~19:20 (셔틀 17:50 / 19:35)', points: 30 }
+      { id: 'wed-school', emoji: '🏫', title: '학교', time: '9:00~13:00', points: 10 },
+      { id: 'wed-art', emoji: '🎨', title: '미술 학원', time: '14:20~15:40', points: 10 },
+      { id: 'wed-swim', emoji: '🏊', title: '수영', time: '18:20~19:20 (셔틀 17:50 / 19:35)', points: 10 }
     ],
     '목': [
-      { id: 'thu-school', emoji: '🏫', title: '학교 · 방과후 컴퓨터', time: '9:00~14:30', points: 25 },
-      { id: 'thu-eng', emoji: '📚', title: '써니 잉글리시', time: '15:00~15:50', points: 20 }
+      { id: 'thu-school', emoji: '🏫', title: '학교 · 방과후 컴퓨터', time: '9:00~14:30', points: 10 },
+      { id: 'thu-eng', emoji: '📚', title: '써니 잉글리시', time: '15:00~15:50', points: 10 }
     ],
     '금': [
-      { id: 'fri-school', emoji: '🏫', title: '학교', time: '9:00~12:50', points: 15 },
-      { id: 'fri-hanja', emoji: '🈶', title: '한자', time: '13:40~14:00', points: 15 },
-      { id: 'fri-hansol', emoji: '📘', title: '학습지', time: '14:30~15:00', points: 15 }
+      { id: 'fri-school', emoji: '🏫', title: '학교', time: '9:00~12:50', points: 10 },
+      { id: 'fri-hanja', emoji: '🈶', title: '한자', time: '13:40~14:00', points: 10 },
+      { id: 'fri-hansol', emoji: '📘', title: '학습지', time: '14:30~15:00', points: 10 }
     ],
     '토': [
-      { id: 'sat-read', emoji: '📖', title: '주말 독서', time: '20분', points: 15 },
-      { id: 'sat-diary', emoji: '🖍️', title: '그림일기', time: '', points: 20 },
+      { id: 'sat-read', emoji: '📖', title: '주말 독서', time: '20분', points: 10 },
+      { id: 'sat-diary', emoji: '🖍️', title: '그림일기', time: '', points: 10 },
       { id: 'sat-free', emoji: '🛝', title: '자유 놀이', time: '', points: 10 }
     ],
     '일': [
-      { id: 'sun-read', emoji: '📖', title: '주말 독서', time: '20분', points: 15 },
-      { id: 'sun-diary', emoji: '🖍️', title: '그림일기', time: '', points: 20 },
+      { id: 'sun-read', emoji: '📖', title: '주말 독서', time: '20분', points: 10 },
+      { id: 'sun-diary', emoji: '🖍️', title: '그림일기', time: '', points: 10 },
       { id: 'sun-free', emoji: '🛝', title: '자유 놀이', time: '', points: 10 }
     ]
   };
 
   var BASE_QUESTS = [
-    { id: 'base-homework', emoji: '✏️', title: '숙제 하기', time: '', points: 30 },
-    { id: 'base-read', emoji: '📚', title: '책 읽기 20분', time: '', points: 20 },
-    { id: 'base-bag', emoji: '🎒', title: '내일 가방 싸기', time: '', points: 15 }
+    { id: 'base-homework', emoji: '✏️', title: '숙제 하기', time: '', points: 10 },
+    { id: 'base-read', emoji: '📚', title: '책 읽기 20분', time: '', points: 10 },
+    { id: 'base-bag', emoji: '🎒', title: '내일 가방 싸기', time: '', points: 10 }
   ];
 
   var PT_CHOICES = [10, 15, 20, 30];
@@ -910,7 +910,7 @@
         id: String(c.id || ('q' + Math.random().toString(36).slice(2, 8))),
         emoji: String(c.emoji || '⭐'),
         text: String(c.text).trim(),
-        points: PT_CHOICES.indexOf(Number(c.points)) >= 0 ? Number(c.points) : 20
+        points: PT_CHOICES.indexOf(Number(c.points)) >= 0 ? Number(c.points) : 10
       };
     });
 
@@ -1259,7 +1259,7 @@
   /* =========================================================
      퀘스트
      ========================================================= */
-  var questPts = 20;
+  var questPts = 10;
 
   function questItems() {
     var day = todayName();
@@ -1328,6 +1328,10 @@
         li.className = 'quest' + (isDone ? ' done' : '');
         li.setAttribute('data-id', it.id);
 
+        /* 이미 체크한 항목은 그때 실제로 적립된 포인트를 그대로 보여 준다
+           (기본 포인트를 10점으로 바꾸기 전에 받은 점수가 화면에서 깎여 보이지 않도록) */
+        var shownPts = isDone ? Math.floor(Number(done[it.id]) || it.points) : it.points;
+
         var main = document.createElement('button');
         main.type = 'button';
         main.className = 'quest-main';
@@ -1339,7 +1343,7 @@
             '<span class="quest-title">' + esc(it.title) + '</span>' +
             (it.time ? '<span class="quest-time">' + esc(it.time) + '</span>' : '') +
           '</span>' +
-          '<span class="qpt">+' + it.points + '</span>';
+          '<span class="qpt">+' + shownPts + '</span>';
         main.addEventListener('click', function () { toggleQuest(it); });
 
         var del = document.createElement('button');
