@@ -155,7 +155,7 @@
   .btn-ghost{background:#F6F2FC;color:#5C4B6B;--sc:#E1D6F0;}
 
   /* ---------- 입력 ---------- */
-  input[type="text"],input[type="number"],input[type="time"],input[type="date"]{
+  input[type="text"],input[type="number"]{
     width:100%;
     min-height:52px;
     padding:12px 14px;
@@ -168,6 +168,23 @@
     outline:none;
     -webkit-appearance:none;
     appearance:none;
+  }
+  /* 날짜·시간은 브라우저 기본 입력기를 그대로 쓴다(키보드로 직접 입력·달력 선택) */
+  input[type="time"],input[type="date"]{
+    width:100%;
+    min-height:52px;
+    padding:10px 12px;
+    font-size:15.5px;
+    font-weight:700;
+    color:var(--ink);
+    background:#FAF7FF;
+    border:2px solid #EEE6F9;
+    border-radius:15px;
+    outline:none;
+    font-variant-numeric:tabular-nums;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator,input[type="time"]::-webkit-calendar-picker-indicator{
+    opacity:.55;cursor:pointer;
   }
   input:focus{border-color:#C9B6EF;background:#fff;}
   .mini-row{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;}
