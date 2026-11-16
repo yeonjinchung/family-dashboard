@@ -440,7 +440,7 @@
   .msg-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
   .msg-top{display:flex;align-items:baseline;gap:8px;}
   .msg-top b{font-size:14px;font-weight:900;color:#7A5FA8;}
-  .msg-time{font-size:11.5px;font-weight:700;color:#B4A7C4;}
+  .msg-time{font-size:11.5px;font-weight:700;color:#B4A7C4;white-space:nowrap;}
   .msg-text{font-size:15px;font-weight:700;word-break:break-word;}
 
   /* ---------- 쇼핑리스트 ---------- */
@@ -780,7 +780,7 @@
       <section class="card" style="--tint:#FFE7EF">
         <div class="card-head">
           <h2>💌 가족 한마디</h2>
-          <span class="hint">연진·로건·지민 한 줄씩</span>
+          <span class="hint">연진·로건·지민 한 줄씩 · 7일 후 자동 정리</span>
         </div>
         <div class="nicks" id="nicks">
           <button class="nick active" data-nick="연진" type="button">👩🏻 연진</button>
@@ -2297,10 +2297,79 @@
      ========================================================= */
   var boardNick = '연진';
 
+  /* 한마디는 카톡처럼 남긴 날짜·시간을 같이 보여주고, 일주일이 지나면 자동으로 정리한다 */
+  var BOARD_TTL = 7 * 24 * 60 * 60 * 1000;
+
+  /* 메시지에 적힌 시각(ts·at·옛 time 문자열)을 epoch ms로 맞춘다. 아무것도 없으면 0 */
+  function boardTs(m) {
+    if (!m || typeof m !== 'object') return 0;
+    var t = Number(m.ts);
+    if (!isFinite(t) || t <= 0) t = Number(m.at);
+    if (!isFinite(t) || t <= 0) {
+      var hm = /^(\d{1,2}):(\d{2})/.exec(String(m.time || ''));
+      if (hm) {
+        var d = new Date();
+        d.setHours(Number(hm[1]), Number(hm[2]), 0, 0);
+        t = d.getTime();
+      }
+    }
+    if (!isFinite(t) || t <= 0) return 0;
+    if (t < 1e11) t = t * 1000;   /* 초 단위로 남은 옛 값 보정 */
+    return t;
+  }
+
+  /* 카톡처럼: 11/16 오후 10:25 */
+  function boardStamp(ts) {
+    var d = new Date(ts);
+    var h = d.getHours();
+    var h12 = h % 12;
+    if (h12 === 0) h12 = 12;
+    return (d.getMonth() + 1) + '/' + d.getDate() + ' ' +
+      (h < 12 ? '오전' : '오후') + ' ' + h12 + ':' + pad(d.getMinutes());
+  }
+
+  function boardStampTitle(ts) {
+    var d = new Date(ts);
+    var h = d.getHours();
+    var h12 = h % 12;
+    if (h12 === 0) h12 = 12;
+    return d.getFullYear() + '년 ' + (d.getMonth() + 1) + '월 ' + d.getDate() + '일 ' +
+      WEEK_LABEL[d.getDay()] + '요일 ' + (h < 12 ? '오전' : '오후') + ' ' + h12 + ':' + pad(d.getMinutes());
+  }
+
+  /* 만료된 한마디(7일 지난 글)를 지우고, 시각이 없는 옛 글은 오늘 시각으로 보정한다.
+     실제로 바뀐 게 있으면 저장까지 하고 true */
+  function pruneBoard() {
+    if (!state.board || typeof state.board !== 'object' || !Array.isArray(state.board.messages)) {
+      state.board = { messages: [] };
+    }
+    var now = Date.now();
+    var keep = [];
+    var changed = false;
+    for (var i = 0; i < state.board.messages.length; i++) {
+      var m = state.board.messages[i];
+      if (!m || typeof m !== 'object' || typeof m.text !== 'string' || !m.text.trim()) {
+        changed = true;
+        continue;
+      }
+      var ts = boardTs(m);
+      if (!ts) { ts = now; changed = true; }
+      else if (Number(m.ts) !== ts || Number(m.at) !== ts) { changed = true; }
+      if (now - ts >= BOARD_TTL) { changed = true; continue; }   /* 일주일 지난 글은 정리 */
+      keep.push({ id: String(m.id || ('m' + ts + '-' + i)), nick: m.nick, text: String(m.text), ts: ts, at: ts });
+    }
+    if (changed) {
+      state.board.messages = keep;
+      save();
+    }
+    return changed;
+  }
+
   function renderBoard() {
     elAll('.nick').forEach(function (b) {
       b.classList.toggle('active', b.getAttribute('data-nick') === boardNick);
     });
+    pruneBoard();
     var ul = el('#messages');
     ul.innerHTML = '';
     if (!state.board.messages.length) {
@@ -2315,11 +2384,12 @@
         var li = document.createElement('li');
         li.className = 'msg';
         var face = m.nick === '로건' ? '👶🏻' : (m.nick === '지민' ? '👦🏻' : '👩🏻');
+        var ts = boardTs(m);
         li.innerHTML =
           '<span class="msg-face">' + face + '</span>' +
           '<span class="msg-body">' +
             '<span class="msg-top"><b>' + esc(m.nick) + '</b>' +
-            '<span class="msg-time">' + timeAgo(m.at) + '</span></span>' +
+            '<span class="msg-time" title="' + esc(boardStampTitle(ts)) + '">' + esc(boardStamp(ts)) + '</span></span>' +
             '<span class="msg-text">' + esc(m.text) + '</span>' +
           '</span>';
         var del = document.createElement('button');
@@ -2342,11 +2412,14 @@
     var input = el('#boardInput');
     var text = String(input.value || '').trim();
     if (!text) { toast('한마디를 적어주세요 ✏️'); input.focus(); return; }
+    pruneBoard();
+    var now = Date.now();
     state.board.messages.unshift({
-      id: 'm' + Date.now() + Math.floor(Math.random() * 1000),
+      id: 'm' + now + Math.floor(Math.random() * 1000),
       nick: boardNick,
       text: text,
-      at: Date.now()
+      ts: now,
+      at: now
     });
     if (state.board.messages.length > 60) state.board.messages.length = 60;
     save();
@@ -2882,6 +2955,7 @@
   }
 
   var lastDayCheck = 0;
+  var lastBoardCheck = 0;
 
   function tick() {
     var now = Date.now();
@@ -2896,6 +2970,11 @@
         renderAll();
         toast('새로운 하루! 오늘의 퀘스트가 새로 시작돼요 🌞');
       }
+    }
+    /* 화면을 계속 켜 둬도 일주일 지난 한마디는 정리한다 */
+    if (now - lastBoardCheck > 60000) {
+      lastBoardCheck = now;
+      if (pruneBoard()) renderBoard();
     }
   }
 
@@ -2962,6 +3041,7 @@
   function init() {
     checkNewDay();
     syncEvolution(true);
+    pruneBoard();
     save();
     bindEvents();
     renderAll();
