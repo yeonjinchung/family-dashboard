@@ -799,14 +799,11 @@
   var SCHEDULE = {
     '월': [
       { id: 'mon-school', emoji: '🏫', title: '학교', time: '9:00~12:50', points: 15 },
-      { id: 'mon-eng', emoji: '📚', title: '영어 학원', time: '13:20~14:10', points: 20 },
-      { id: 'mon-play', emoji: '🧸', title: '돌봄 시간', time: '16:00~18:30', points: 20 }
+      { id: 'mon-eng', emoji: '📚', title: '써니 잉글리시', time: '13:20~14:10', points: 20 }
     ],
     '화': [
-      { id: 'tue-school', emoji: '🏫', title: '학교', time: '9:00~13:20', points: 15 },
-      { id: 'tue-pc', emoji: '💻', title: '방과후 컴퓨터', time: '13:40~14:30', points: 20 },
-      { id: 'tue-eng', emoji: '📚', title: '영어 학원', time: '15:00~15:50', points: 20 },
-      { id: 'tue-play', emoji: '🧸', title: '돌봄 시간', time: '16:00~18:30', points: 20 }
+      { id: 'tue-school', emoji: '🏫', title: '학교 · 방과후 컴퓨터', time: '9:00~14:30', points: 25 },
+      { id: 'tue-eng', emoji: '📚', title: '써니 잉글리시', time: '15:00~15:50', points: 20 }
     ],
     '수': [
       { id: 'wed-school', emoji: '🏫', title: '학교', time: '9:00~13:00', points: 15 },
@@ -814,16 +811,13 @@
       { id: 'wed-swim', emoji: '🏊', title: '수영', time: '18:20~19:20 (셔틀 17:50 / 19:35)', points: 30 }
     ],
     '목': [
-      { id: 'thu-school', emoji: '🏫', title: '학교', time: '9:00~13:30', points: 15 },
-      { id: 'thu-pc', emoji: '💻', title: '방과후 컴퓨터', time: '13:40~14:30', points: 20 },
-      { id: 'thu-eng', emoji: '📚', title: '영어 학원', time: '15:00~15:50', points: 20 },
-      { id: 'thu-play', emoji: '🧸', title: '돌봄 시간', time: '16:00~18:30', points: 20 }
+      { id: 'thu-school', emoji: '🏫', title: '학교 · 방과후 컴퓨터', time: '9:00~14:30', points: 25 },
+      { id: 'thu-eng', emoji: '📚', title: '써니 잉글리시', time: '15:00~15:50', points: 20 }
     ],
     '금': [
       { id: 'fri-school', emoji: '🏫', title: '학교', time: '9:00~12:50', points: 15 },
       { id: 'fri-hanja', emoji: '🈶', title: '한자', time: '13:40~14:00', points: 15 },
-      { id: 'fri-hansol', emoji: '📘', title: '학습지', time: '14:30~15:00', points: 15 },
-      { id: 'fri-play', emoji: '🧸', title: '돌봄 시간', time: '16:00~18:30', points: 20 }
+      { id: 'fri-hansol', emoji: '📘', title: '학습지', time: '14:30~15:00', points: 15 }
     ],
     '토': [
       { id: 'sat-read', emoji: '📖', title: '주말 독서', time: '20분', points: 15 },
@@ -919,6 +913,28 @@
         points: PT_CHOICES.indexOf(Number(c.points)) >= 0 ? Number(c.points) : 20
       };
     });
+
+    /* 스케줄 구성이 바뀌어 없어진 퀘스트(예: 따로 있던 '방과후 컴퓨터')와 그 밖에 모르는 ID의
+       체크·삭제 흔적을 저장본에서 지운다.
+       오늘 퀘스트의 제목·시간·포인트는 저장본이 아니라 SCHEDULE에서 그때그때 읽으므로,
+       남아 있는 스케줄 퀘스트는 언제나 최신 구성(학교 · 방과후 컴퓨터 통합, 써니 잉글리시)으로 보인다. */
+    var knownIds = {};
+    (function () {
+      var d, i2;
+      for (d in SCHEDULE) {
+        if (!Object.prototype.hasOwnProperty.call(SCHEDULE, d)) continue;
+        for (i2 = 0; i2 < SCHEDULE[d].length; i2++) knownIds[SCHEDULE[d][i2].id] = true;
+      }
+      for (i2 = 0; i2 < BASE_QUESTS.length; i2++) knownIds[BASE_QUESTS[i2].id] = true;
+      for (i2 = 0; i2 < q.custom.length; i2++) knownIds[q.custom[i2].id] = true;
+    })();
+    var kid;
+    for (kid in q.done) {
+      if (Object.prototype.hasOwnProperty.call(q.done, kid) && !knownIds[kid]) delete q.done[kid];
+    }
+    for (kid in q.deleted) {
+      if (Object.prototype.hasOwnProperty.call(q.deleted, kid) && !knownIds[kid]) delete q.deleted[kid];
+    }
 
     if (!Array.isArray(base.board.messages)) base.board.messages = [];
     /* 예전 이름(엄마·로건이·아이)으로 남긴 한마디는 새 표기(연진·로건)로 옮긴다 */
