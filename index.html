@@ -2613,6 +2613,9 @@
       state.quests.date = k;
       state.quests.done = {};
       state.quests.today = [];
+      /* 자정을 넘겨 화면을 켜 둔 경우에도 추가 칩이 오늘 요일을 가리키게 */
+      addDays = [todayName()];
+      addOnce = false;
       changed = true;
     }
     if (changed) save();
