@@ -261,8 +261,70 @@
   .poke-choice span{font-size:11.5px;font-weight:800;color:var(--ink-2);}
 
   .quest-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
-  .quest-head h3{font-size:18px;font-weight:900;}
+  .quest-head h3{font-size:18px;font-weight:900;display:flex;align-items:center;gap:7px;}
   .quest-count{font-size:14px;font-weight:900;color:var(--ink-2);}
+  .quest-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .day-chip{
+    font-size:12.5px;font-weight:900;padding:3px 10px;border-radius:999px;
+    background:#F2ECFA;color:#6E5C80;
+  }
+
+  /* 요일 반복 선택 */
+  .day-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .day-row-label{font-size:12.5px;font-weight:900;color:var(--ink-2);flex:0 0 auto;}
+  .day-picker{display:flex;gap:5px;flex-wrap:wrap;flex:1;min-width:0;}
+  .day-btn{
+    min-width:42px;height:38px;padding:0 10px;border:2px solid transparent;border-radius:12px;
+    background:#F5F1FC;color:#6E5C80;font-size:14px;font-weight:900;cursor:pointer;
+    display:inline-grid;place-items:center;
+  }
+  .day-btn.active{background:#FFF3D2;border-color:#FFD868;color:#8A6200;}
+  .day-btn.all{font-size:13px;padding:0 9px;}
+  .day-btn.once{font-size:13px;padding:0 9px;}
+  .day-btn.once.active{background:#FFE7EF;border-color:#FFB8CC;color:#B4416B;}
+  .day-hint{font-size:12.5px;font-weight:800;color:#7A64A8;}
+  .qtag{
+    display:inline-block;font-size:11px;font-weight:900;padding:2px 7px;border-radius:999px;
+    background:#FFE7EF;color:#B4416B;margin-left:6px;vertical-align:1px;
+  }
+
+  /* 루틴 관리 패널 */
+  .routine-panel{
+    border-radius:20px;padding:13px;display:flex;flex-direction:column;gap:10px;
+    background:#FCF8FF;border:2px dashed #E2D6F8;
+  }
+  .routine-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .routine-head b{font-size:15.5px;font-weight:900;}
+  .routine-head .btn{margin-left:auto;}
+  .routine-tabs{display:flex;gap:5px;flex-wrap:wrap;}
+  .routine-tab{
+    min-width:44px;height:40px;padding:0 10px;border:2px solid transparent;border-radius:13px;
+    background:#fff;color:#6E5C80;font-size:14.5px;font-weight:900;cursor:pointer;
+  }
+  .routine-tab.active{background:#F7F2FF;border-color:#B79CE8;color:#5B3E96;}
+  .routine-tab.today::after{content:"·오늘";font-size:10.5px;margin-left:2px;color:#B4416B;}
+  .routine-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;}
+  .routine-item{
+    display:flex;align-items:center;gap:8px;
+    background:#fff;border-radius:14px;padding:8px 10px;
+  }
+  .routine-item .r-emoji{font-size:17px;line-height:1;flex:0 0 auto;}
+  .routine-item .r-body{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .routine-item .r-title{font-size:14.5px;font-weight:800;word-break:break-word;}
+  .routine-item .r-time{font-size:12px;font-weight:700;color:var(--ink-2);}
+  .routine-item .r-src{
+    flex:0 0 auto;font-size:10.5px;font-weight:900;padding:2px 7px;border-radius:999px;
+    background:#F2ECFA;color:#7A64A8;
+  }
+  .routine-item .r-src.mine{background:#FFF3D2;color:#8A6200;}
+  .routine-item .r-pt{flex:0 0 auto;font-size:12px;font-weight:900;color:#8A6200;}
+  .routine-item .r-del{
+    flex:0 0 auto;width:30px;height:30px;border:0;border-radius:10px;
+    background:transparent;color:#C4B8D6;font-size:14px;font-weight:900;cursor:pointer;
+  }
+  .routine-item .r-del:active{background:#F3EEFB;}
+  .routine-list .empty{background:transparent;}
+  .routine-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
   .progress{display:flex;align-items:center;gap:10px;}
   .progress-bar{flex:1;height:14px;border-radius:999px;background:#F2ECFA;overflow:hidden;}
   .progress-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#7EDCC1,#5FD1B0);transition:width .35s ease;}
@@ -609,8 +671,11 @@
         </div>
 
         <div class="quest-head">
-          <h3>⭐ 오늘의 퀘스트</h3>
-          <span class="quest-count" id="questCount">0/0 완료</span>
+          <h3>⭐ 오늘의 퀘스트 <span class="day-chip" id="questDay">월</span></h3>
+          <div class="quest-tools">
+            <span class="quest-count" id="questCount">0/0 완료</span>
+            <button class="btn btn-ghost small" id="routineBtn" type="button">🗓 루틴 관리</button>
+          </div>
         </div>
         <div class="progress">
           <div class="progress-bar"><i id="questFill"></i></div>
@@ -622,6 +687,31 @@
           <input id="newQuestText" type="text" placeholder="퀘스트 추가 (예: 받아쓰기 연습)" maxlength="40">
           <div class="pts-picker" id="questPts"></div>
           <button class="btn btn-ghost small" id="addQuestBtn" type="button">＋ 추가</button>
+        </div>
+
+        <div class="day-row">
+          <span class="day-row-label">이 퀘스트가 뜰 요일</span>
+          <div class="day-picker" id="questDays"></div>
+        </div>
+        <div class="day-hint" id="questDaysHint">월요일마다 떠요</div>
+
+        <div class="routine-panel" id="routinePanel" hidden>
+          <div class="routine-head">
+            <b>🗓 요일별 루틴</b>
+            <span class="hint">한 번 넣어 두면 매주 그 요일에 그대로 떠요</span>
+            <button class="btn btn-ghost small" id="routineCloseBtn" type="button">닫기</button>
+          </div>
+          <div class="routine-tabs" id="routineTabs"></div>
+          <ul class="routine-list" id="routineList"></ul>
+          <div class="mini-row">
+            <input id="routineText" type="text" placeholder="이 요일에 넣을 루틴 (예: 줄넘기 100개)" maxlength="40">
+            <div class="pts-picker" id="routinePts"></div>
+            <button class="btn btn-ghost small" id="routineAddBtn" type="button">＋ 넣기</button>
+          </div>
+          <div class="routine-foot">
+            <button class="btn btn-ghost small" id="routineRestoreBtn" type="button">🔄 기본 루틴 다시 넣기</button>
+            <span class="hint" id="routineHint">기본은 시간표·숙제 같은 원래 퀘스트예요</span>
+          </div>
         </div>
 
         <div class="egg-box" id="eggBox">
@@ -699,6 +789,7 @@
       <ul>
         <li>아이폰·아이패드 <b>사파리</b>에서 열고 <b>공유 → 홈 화면에 추가</b>를 누르면 앱처럼 전체 화면으로 열려요.</li>
         <li><b>⚡ 포켓몬 키우기</b>는 로건이가 <b>파트너 고르기</b>로 스타팅 포켓몬을 고르고, <b>오늘의 퀘스트</b>를 체크할 때마다 포인트만큼 경험치가 쌓여요. 경험치가 차면 레벨업, Lv.5·Lv.10에서 진화하며 도감에 쏙!</li>
+        <li><b>🗓 루틴</b>은 <b>오늘의 퀘스트</b>에서 넣을 때 <b>매일 · 월~일 · 오늘만</b> 중 고르면 돼요. 한 번 넣어 두면 그 요일마다 매주 그대로 떠요. <b>루틴 관리</b>를 누르면 월~일 요일별로 보고, 넣고, 빼고, <b>기본 루틴 다시 넣기</b>까지 할 수 있어요.</li>
         <li><b>🥚 올클리어 알</b>은 오늘 퀘스트를 <b>모두</b> 체크하면 하루 한 번 부화해요. 새 포켓몬이 도감에 등록되고 보너스 경험치도 받아요.</li>
         <li><b>📅 가족 달력</b>은 날짜를 누른 뒤 시간·내용·담당(👩🏻 연진 / 👶🏻 로건 / 👦🏻 지민 / 🏡 함께)을 골라 <b>＋ 일정 추가</b>를 누르면 돼요.</li>
         <li><b>🛒 쇼핑리스트</b>는 <b>장보기</b>와 <b>사주세요</b>로 나눠 담고, 부탁한 사람을 골라 둘 수 있어요. 산 것은 눌러서 체크하고 <b>완료 비우기</b>로 정리해요.</li>
@@ -839,6 +930,87 @@
 
   var PT_CHOICES = [10, 15, 20, 30];
 
+  /* =========================================================
+     요일별 루틴
+     그 요일의 기본 시간표(SCHEDULE)와 기본 퀘스트(BASE_QUESTS)가 '기본 루틴'이 된다.
+     사용자가 넣은 루틴은 src:'custom'으로 같은 배열에 들어가고,
+     퀘스트를 지우면 그 요일 배열에서 빠져 다음 주에도 나오지 않는다.
+     ========================================================= */
+  var SRC_LABEL = { schedule: '기본', base: '기본', custom: '내 루틴' };
+  var CHIP_ALL = '매일';
+  var CHIP_ONCE = '오늘만';
+
+  function newRoutineId() {
+    return 'r' + Date.now().toString(36) + Math.floor(Math.random() * 1000);
+  }
+
+  function newOnceId() {
+    return 'o' + Date.now().toString(36) + Math.floor(Math.random() * 1000);
+  }
+
+  function defaultRoutineFor(day) {
+    var out = [], i, src = SCHEDULE[day] || [];
+    for (i = 0; i < src.length; i++) {
+      out.push({
+        id: src[i].id, emoji: src[i].emoji, title: src[i].title,
+        time: src[i].time, points: src[i].points, src: 'schedule'
+      });
+    }
+    if (!WEEKEND[day]) {
+      for (i = 0; i < BASE_QUESTS.length; i++) {
+        out.push({
+          id: BASE_QUESTS[i].id, emoji: BASE_QUESTS[i].emoji, title: BASE_QUESTS[i].title,
+          time: BASE_QUESTS[i].time, points: BASE_QUESTS[i].points, src: 'base'
+        });
+      }
+    }
+    return out;
+  }
+
+  function defaultRoutines() {
+    var out = {}, i;
+    for (i = 0; i < DAYS.length; i++) out[DAYS[i]] = defaultRoutineFor(DAYS[i]);
+    return out;
+  }
+
+  function normRoutineItem(x) {
+    if (!x || typeof x !== 'object') return null;
+    var title = String(x.title !== undefined ? x.title : (x.text !== undefined ? x.text : '')).trim();
+    if (!title) return null;
+    var src = (x.src === 'schedule' || x.src === 'base') ? x.src : 'custom';
+    return {
+      id: String(x.id || newRoutineId()),
+      emoji: String(x.emoji || '⭐'),
+      title: title,
+      time: String(x.time || ''),
+      points: PT_CHOICES.indexOf(Number(x.points)) >= 0 ? Number(x.points) : 10,
+      src: src
+    };
+  }
+
+  /* 저장된 루틴 중 기본 항목은 지금의 시간표 정의를 그대로 따라간다.
+     (시간표가 바뀌면 문구·시간이 따라 바뀌고, 시간표에서 빠진 항목은 루틴에서도 빠진다.
+      사용자가 넣은 '내 루틴'은 건드리지 않는다.) */
+  function refreshRoutine(day, arr) {
+    var defs = defaultRoutineFor(day), byId = {}, i;
+    for (i = 0; i < defs.length; i++) byId[defs[i].id] = defs[i];
+    var out = [];
+    for (i = 0; i < arr.length; i++) {
+      var it = arr[i];
+      if (it.src === 'schedule' || it.src === 'base') {
+        var d = byId[it.id];
+        if (!d) continue;
+        out.push({
+          id: d.id, emoji: d.emoji, title: d.title, time: d.time,
+          points: d.points, src: d.src
+        });
+      } else {
+        out.push(it);
+      }
+    }
+    return out;
+  }
+
   var STORAGE_KEY = 'family-dashboard-v1';
 
   /* =========================================================
@@ -856,9 +1028,9 @@
 
   function defaults() {
     return {
-      version: 2,
+      version: 3,
       pokemon: { partner: '', level: 1, xp: 0, points: 0, dex: [], eggDate: '', eggPoke: 0 },
-      quests: { date: todayKey(), done: {}, custom: [], deleted: {} },
+      quests: { date: todayKey(), done: {}, routines: defaultRoutines(), today: [] },
       board: { messages: [] },
       events: { items: [], view: '', selected: '' },
       shopping: []
@@ -867,10 +1039,13 @@
 
   function loadState() {
     var base = defaults();
+    var hadRoutines = false;
     try {
       var raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         var saved = JSON.parse(raw);
+        hadRoutines = !!(saved && saved.quests && typeof saved.quests === 'object'
+          && saved.quests.routines && typeof saved.quests.routines === 'object');
         var objs = ['pokemon', 'quests', 'board', 'events'];
         for (var i = 0; i < objs.length; i++) {
           var k = objs[i];
@@ -901,40 +1076,53 @@
     if (typeof q !== 'object' || !q) { q = base.quests = defaults().quests; }
     if (typeof q.date !== 'string') q.date = todayKey();
     if (typeof q.done !== 'object' || !q.done) q.done = {};
-    if (typeof q.deleted !== 'object' || !q.deleted) q.deleted = {};
-    if (!Array.isArray(q.custom)) q.custom = [];
-    q.custom = q.custom.filter(function (c) {
-      return c && typeof c.text === 'string' && c.text.trim();
-    }).map(function (c) {
-      return {
-        id: String(c.id || ('q' + Math.random().toString(36).slice(2, 8))),
-        emoji: String(c.emoji || '⭐'),
-        text: String(c.text).trim(),
-        points: PT_CHOICES.indexOf(Number(c.points)) >= 0 ? Number(c.points) : 10
-      };
+
+    /* 예전 저장본(v2)에는 요일별 루틴 없이 custom(모든 날 공통) + deleted(전역 숨김)만 있었다.
+       - 루틴이 없으면 기본 루틴으로 만들고, 예전 '내가 넣은 퀘스트'는 모든 요일에 넣어 준다.
+       - 예전에 지운 항목은 해당 요일 루틴에서만 뺐던 것과 같은 결과가 된다. */
+    var legacyCustom = [];
+    if (Array.isArray(q.custom)) {
+      legacyCustom = q.custom.map(normRoutineItem).filter(Boolean).map(function (c) {
+        return { id: c.id, emoji: c.emoji, title: c.title, time: '', points: c.points, src: 'custom' };
+      });
+    }
+    var legacyDeleted = (q.deleted && typeof q.deleted === 'object') ? q.deleted : {};
+    var fresh = !hadRoutines;
+    if (!q.routines || typeof q.routines !== 'object') q.routines = {};
+
+    var di, dname, arr, ai;
+    for (di = 0; di < DAYS.length; di++) {
+      dname = DAYS[di];
+      arr = Array.isArray(q.routines[dname]) ? q.routines[dname] : defaultRoutineFor(dname);
+      arr = arr.map(normRoutineItem).filter(Boolean);
+      if (fresh) {
+        for (ai = 0; ai < legacyCustom.length; ai++) arr.push(legacyCustom[ai]);
+      }
+      arr = arr.filter(function (it) { return !legacyDeleted[it.id]; });
+      q.routines[dname] = refreshRoutine(dname, arr);
+    }
+
+    /* 오늘만 하는 퀘스트 (다음 날이 되면 비워진다) */
+    if (!Array.isArray(q.today)) q.today = [];
+    q.today = q.today.map(normRoutineItem).filter(Boolean).map(function (c) {
+      return { id: c.id, emoji: c.emoji, title: c.title, time: c.time, points: c.points, src: 'custom' };
     });
 
-    /* 스케줄 구성이 바뀌어 없어진 퀘스트(예: 따로 있던 '방과후 컴퓨터')와 그 밖에 모르는 ID의
-       체크·삭제 흔적을 저장본에서 지운다.
-       오늘 퀘스트의 제목·시간·포인트는 저장본이 아니라 SCHEDULE에서 그때그때 읽으므로,
-       남아 있는 스케줄 퀘스트는 언제나 최신 구성(학교 · 방과후 컴퓨터 통합, 써니 잉글리시)으로 보인다. */
+    /* 없어진 퀘스트의 체크 흔적만 정리한다 (포인트·경험치는 그대로 둔다) */
     var knownIds = {};
-    (function () {
-      var d, i2;
-      for (d in SCHEDULE) {
-        if (!Object.prototype.hasOwnProperty.call(SCHEDULE, d)) continue;
-        for (i2 = 0; i2 < SCHEDULE[d].length; i2++) knownIds[SCHEDULE[d][i2].id] = true;
-      }
-      for (i2 = 0; i2 < BASE_QUESTS.length; i2++) knownIds[BASE_QUESTS[i2].id] = true;
-      for (i2 = 0; i2 < q.custom.length; i2++) knownIds[q.custom[i2].id] = true;
-    })();
+    for (di = 0; di < DAYS.length; di++) {
+      arr = q.routines[DAYS[di]];
+      for (ai = 0; ai < arr.length; ai++) knownIds[arr[ai].id] = true;
+    }
+    for (ai = 0; ai < q.today.length; ai++) knownIds[q.today[ai].id] = true;
     var kid;
     for (kid in q.done) {
       if (Object.prototype.hasOwnProperty.call(q.done, kid) && !knownIds[kid]) delete q.done[kid];
     }
-    for (kid in q.deleted) {
-      if (Object.prototype.hasOwnProperty.call(q.deleted, kid) && !knownIds[kid]) delete q.deleted[kid];
-    }
+
+    /* 예전 필드는 루틴으로 옮겼으니 저장본에서 지운다 */
+    delete q.custom;
+    delete q.deleted;
 
     if (!Array.isArray(base.board.messages)) base.board.messages = [];
     /* 예전 이름(엄마·로건이·아이)으로 남긴 한마디는 새 표기(연진·로건)로 옮긴다 */
@@ -1261,25 +1449,32 @@
      ========================================================= */
   var questPts = 10;
 
+  /* 요일별 루틴 배열 */
+  function routineOf(day) {
+    var r = (state.quests && state.quests.routines) || {};
+    return Array.isArray(r[day]) ? r[day] : [];
+  }
+
+  /* 오늘 퀘스트 = 오늘 요일의 루틴 + 오늘만 넣은 일회성 퀘스트 */
   function questItems() {
     var day = todayName();
     var items = [];
-    var src = SCHEDULE[day] || [];
+    var src = routineOf(day);
     var i;
     for (i = 0; i < src.length; i++) {
-      items.push({ id: src[i].id, emoji: src[i].emoji, title: src[i].title, time: src[i].time, points: src[i].points, builtin: true });
+      items.push({
+        id: src[i].id, emoji: src[i].emoji, title: src[i].title, time: src[i].time,
+        points: src[i].points, builtin: src[i].src !== 'custom', oneshot: false, src: src[i].src
+      });
     }
-    if (!WEEKEND[day]) {
-      for (i = 0; i < BASE_QUESTS.length; i++) {
-        items.push({ id: BASE_QUESTS[i].id, emoji: BASE_QUESTS[i].emoji, title: BASE_QUESTS[i].title, time: BASE_QUESTS[i].time, points: BASE_QUESTS[i].points, builtin: true });
-      }
+    var once = state.quests.today || [];
+    for (i = 0; i < once.length; i++) {
+      items.push({
+        id: once[i].id, emoji: once[i].emoji, title: once[i].title, time: once[i].time,
+        points: once[i].points, builtin: false, oneshot: true, src: 'custom'
+      });
     }
-    var custom = state.quests.custom || [];
-    for (i = 0; i < custom.length; i++) {
-      items.push({ id: custom[i].id, emoji: custom[i].emoji, title: custom[i].text, time: '', points: custom[i].points, builtin: false });
-    }
-    var deleted = state.quests.deleted || {};
-    return items.filter(function (it) { return !deleted[it.id]; });
+    return items;
   }
 
   function questStats(items) {
@@ -1340,7 +1535,9 @@
           '<span class="check">' + (isDone ? '✓' : '') + '</span>' +
           '<span class="quest-emoji">' + it.emoji + '</span>' +
           '<span class="quest-body">' +
-            '<span class="quest-title">' + esc(it.title) + '</span>' +
+            '<span class="quest-title">' + esc(it.title) +
+              (it.oneshot ? '<span class="qtag">오늘만</span>' : '') +
+            '</span>' +
             (it.time ? '<span class="quest-time">' + esc(it.time) + '</span>' : '') +
           '</span>' +
           '<span class="qpt">+' + shownPts + '</span>';
@@ -1365,6 +1562,8 @@
       empty.textContent = '오늘 퀘스트가 없어요. 아래에서 추가해 보세요!';
       list.appendChild(empty);
     }
+
+    el('#questDay').textContent = todayName();
 
     var st = questStats(items);
     el('#questCount').textContent = st.done + '/' + st.total + ' 완료';
@@ -1410,32 +1609,61 @@
     checkEgg();
   }
 
+  /* 퀘스트 지우기 = 그 요일 루틴에서 빼기 (다음 주 같은 요일에도 안 나온다) */
   function deleteQuest(it) {
-    if (it.builtin) {
-      state.quests.deleted[it.id] = true;
+    var day = todayName();
+    if (it.oneshot) {
+      state.quests.today = (state.quests.today || []).filter(function (c) { return c.id !== it.id; });
     } else {
-      state.quests.custom = state.quests.custom.filter(function (c) { return c.id !== it.id; });
+      var r = state.quests.routines || (state.quests.routines = {});
+      if (!Array.isArray(r[day])) r[day] = [];
+      r[day] = r[day].filter(function (c) { return c.id !== it.id; });
     }
     if (state.quests.done) delete state.quests.done[it.id];
     save();
     renderAll();
-    toast('퀘스트를 뺐어요');
+    toast(it.oneshot
+      ? '오늘만 퀘스트를 지웠어요'
+      : day + '요일 루틴에서 뺐어요 · 다른 요일은 그대로');
   }
 
   function addQuest() {
     var input = el('#newQuestText');
     var text = String(input.value || '').trim();
     if (!text) { toast('퀘스트 내용을 적어주세요 ✏️'); input.focus(); return; }
-    state.quests.custom.push({
-      id: 'q' + Date.now() + Math.floor(Math.random() * 1000),
-      emoji: '⭐',
-      text: text,
-      points: questPts
-    });
+    var pts = questPts;
+
+    /* 오늘만 */
+    if (addOnce) {
+      if (!Array.isArray(state.quests.today)) state.quests.today = [];
+      state.quests.today.push({
+        id: newOnceId(), emoji: '⭐', title: text, time: '', points: pts, src: 'custom'
+      });
+      save();
+      input.value = '';
+      renderAll();
+      playBlip();
+      toast('오늘만 하는 퀘스트로 넣었어요 (+' + pts + 'P)');
+      return;
+    }
+
+    var days = DAYS.filter(function (d) { return addDays.indexOf(d) >= 0; });
+    if (!days.length) { toast('이 퀘스트가 뜰 요일을 골라 주세요 🗓'); return; }
+
+    /* 한 번 넣으면 고른 요일마다 매주 그대로 뜬다 */
+    var id = newRoutineId();
+    var r = state.quests.routines || (state.quests.routines = {});
+    for (var i = 0; i < days.length; i++) {
+      if (!Array.isArray(r[days[i]])) r[days[i]] = defaultRoutineFor(days[i]);
+      r[days[i]].push({ id: id, emoji: '⭐', title: text, time: '', points: pts, src: 'custom' });
+    }
     save();
     input.value = '';
     renderAll();
-    toast('퀘스트를 추가했어요 (+' + questPts + 'P)');
+    playBlip();
+    var where = days.length === DAYS.length ? '매일'
+      : (days.length === 1 ? days[0] + '요일' : days.join('·') + '요일');
+    toast(where + ' 루틴에 넣었어요 (+' + pts + 'P)');
   }
 
   function resetQuests() {
@@ -1480,6 +1708,201 @@
     var msg = '🥚 알이 부화! ' + pick.name + ' 도감 등록! +50XP' + (ups > 0 ? ' 레벨업! ⭐' : '');
     if (newly.length) msg += ' · 진화! ' + pokeNames(newly);
     toast(msg);
+  }
+
+  /* =========================================================
+     요일 반복 선택 · 루틴 관리
+     ========================================================= */
+  var addDays = [todayName()];   /* 추가할 때 고른 반복 요일 */
+  var addOnce = false;           /* '오늘만' 선택 여부 */
+  var routineDay = todayName();  /* 루틴 관리에서 보고 있는 요일 */
+  var routinePts = 10;
+  var routineOpen = false;
+
+  function isChipActive(label) {
+    if (label === CHIP_ONCE) return addOnce;
+    if (addOnce) return false;
+    if (label === CHIP_ALL) return addDays.length === DAYS.length;
+    return addDays.indexOf(label) >= 0;
+  }
+
+  function daySelectionLabel() {
+    if (addOnce) return '오늘만 떠요 · 내일은 사라져요';
+    if (!addDays.length) return '아직 고른 요일이 없어요';
+    if (addDays.length === DAYS.length) return '매일 떠요';
+    var sorted = DAYS.filter(function (d) { return addDays.indexOf(d) >= 0; });
+    return (sorted.length === 1 ? sorted[0] + '요일마다 떠요' : sorted.join('·') + '요일마다 떠요');
+  }
+
+  function pickDay(label) {
+    if (label === CHIP_ONCE) {
+      addOnce = !addOnce;
+      addDays = addOnce ? [] : [todayName()];
+    } else if (label === CHIP_ALL) {
+      addOnce = false;
+      addDays = (addDays.length === DAYS.length) ? [] : DAYS.slice();
+    } else {
+      addOnce = false;
+      var i = addDays.indexOf(label);
+      if (i >= 0) addDays.splice(i, 1); else addDays.push(label);
+    }
+    renderDayPicker();
+  }
+
+  function renderDayPicker() {
+    var box = el('#questDays');
+    box.innerHTML = '';
+    var labels = [CHIP_ALL].concat(DAYS).concat([CHIP_ONCE]);
+    for (var i = 0; i < labels.length; i++) {
+      (function (label) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'day-btn'
+          + (label === CHIP_ALL ? ' all' : (label === CHIP_ONCE ? ' once' : ''))
+          + (isChipActive(label) ? ' active' : '');
+        b.setAttribute('data-day', label);
+        b.setAttribute('aria-label', label + ' 반복');
+        b.textContent = label;
+        b.addEventListener('click', function () { pickDay(label); });
+        box.appendChild(b);
+      })(labels[i]);
+    }
+    el('#questDaysHint').textContent = daySelectionLabel();
+  }
+
+  function renderRoutinePts() {
+    var box = el('#routinePts');
+    if (!box) return;
+    box.innerHTML = '';
+    for (var i = 0; i < PT_CHOICES.length; i++) {
+      (function (v) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'pts-btn' + (v === routinePts ? ' active' : '');
+        b.setAttribute('data-pts', String(v));
+        b.textContent = '+' + v;
+        b.addEventListener('click', function () {
+          routinePts = v;
+          renderRoutinePts();
+        });
+        box.appendChild(b);
+      })(PT_CHOICES[i]);
+    }
+  }
+
+  function routineLabel(day) {
+    return day === todayName() ? day + '요일 (오늘)' : day + '요일';
+  }
+
+  function renderRoutine() {
+    el('#routinePanel').hidden = !routineOpen;
+    var tabs = el('#routineTabs');
+    tabs.innerHTML = '';
+    var today = todayName();
+    for (var i = 0; i < DAYS.length; i++) {
+      (function (d) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'routine-tab' + (d === routineDay ? ' active' : '') + (d === today ? ' today' : '');
+        b.setAttribute('data-day', d);
+        b.setAttribute('aria-label', routineLabel(d) + ' 루틴');
+        b.textContent = d;
+        b.addEventListener('click', function () {
+          routineDay = d;
+          renderRoutine();
+        });
+        tabs.appendChild(b);
+      })(DAYS[i]);
+    }
+
+    var ul = el('#routineList');
+    ul.innerHTML = '';
+    var arr = routineOf(routineDay);
+    for (var j = 0; j < arr.length; j++) {
+      (function (it) {
+        var li = document.createElement('li');
+        li.className = 'routine-item';
+        li.setAttribute('data-id', it.id);
+        li.innerHTML =
+          '<span class="r-emoji">' + it.emoji + '</span>' +
+          '<span class="r-body">' +
+            '<span class="r-title">' + esc(it.title) + '</span>' +
+            (it.time ? '<span class="r-time">' + esc(it.time) + '</span>' : '') +
+          '</span>' +
+          '<span class="r-src' + (it.src === 'custom' ? ' mine' : '') + '">' +
+            esc(SRC_LABEL[it.src] || '기본') + '</span>' +
+          '<span class="r-pt">+' + it.points + '</span>';
+
+        var del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'r-del';
+        del.textContent = '✕';
+        del.setAttribute('aria-label', it.title + ' 루틴 빼기');
+        del.addEventListener('click', function () { removeRoutine(it); });
+        li.appendChild(del);
+        ul.appendChild(li);
+      })(arr[j]);
+    }
+    if (!arr.length) {
+      var empty = document.createElement('li');
+      empty.className = 'empty';
+      empty.textContent = routineDay + '요일에는 루틴이 없어요. 아래에서 넣어 보세요!';
+      ul.appendChild(empty);
+    }
+
+    renderRoutinePts();
+    el('#routineHint').textContent = routineLabel(routineDay) + ' 루틴 ' + arr.length +
+      '개 · 기본은 시간표·숙제 같은 원래 퀘스트예요';
+  }
+
+  function toggleRoutine(force) {
+    routineOpen = (force === undefined) ? !routineOpen : !!force;
+    if (routineOpen) routineDay = todayName();
+    el('#routinePanel').hidden = !routineOpen;
+    if (routineOpen) renderRoutine();
+  }
+
+  function addRoutine() {
+    var input = el('#routineText');
+    var text = String(input.value || '').trim();
+    if (!text) { toast('넣을 루틴을 적어주세요 ✏️'); input.focus(); return; }
+    var r = state.quests.routines || (state.quests.routines = {});
+    if (!Array.isArray(r[routineDay])) r[routineDay] = defaultRoutineFor(routineDay);
+    r[routineDay].push({
+      id: newRoutineId(), emoji: '⭐', title: text, time: '', points: routinePts, src: 'custom'
+    });
+    save();
+    input.value = '';
+    renderAll();
+    playBlip();
+    toast(routineDay + '요일 루틴에 넣었어요 (+' + routinePts + 'P)');
+  }
+
+  function removeRoutine(it) {
+    var r = state.quests.routines || (state.quests.routines = {});
+    r[routineDay] = routineOf(routineDay).filter(function (c) { return c.id !== it.id; });
+    if (routineDay === todayName() && state.quests.done) delete state.quests.done[it.id];
+    save();
+    renderAll();
+    toast(routineDay + '요일 루틴에서 뺐어요');
+  }
+
+  /* 이 요일에 기본 루틴(시간표 + 숙제 등)을 다시 채운다. 내가 넣은 루틴은 그대로 둔다 */
+  function restoreRoutine() {
+    var day = routineDay;
+    var defs = defaultRoutineFor(day);
+    var cur = routineOf(day);
+    var have = {};
+    for (var i = 0; i < cur.length; i++) have[cur[i].id] = true;
+    var mine = cur.filter(function (c) { return c.src === 'custom'; });
+    var added = 0;
+    for (var j = 0; j < defs.length; j++) { if (!have[defs[j].id]) added++; }
+    state.quests.routines[day] = defs.concat(mine);
+    save();
+    renderAll();
+    toast(added
+      ? day + '요일 기본 루틴을 다시 넣었어요 (+' + added + '개)'
+      : day + '요일 기본 루틴이 이미 다 들어 있어요');
   }
 
   /* =========================================================
@@ -2177,8 +2600,11 @@
     var k = todayKey();
     var changed = false;
     if (state.quests.date !== k) {
+      /* 새 날: 오늘 체크와 '오늘만' 퀘스트만 비운다.
+         요일별 루틴은 그대로 남아 오늘 요일 루틴이 자동으로 뜬다. */
       state.quests.date = k;
       state.quests.done = {};
+      state.quests.today = [];
       changed = true;
     }
     if (changed) save();
@@ -2188,6 +2614,8 @@
   function renderAll() {
     renderPokemon();
     renderQuests();
+    renderDayPicker();
+    renderRoutine();
     renderEgg();
     renderBoard();
     renderCalendar();
@@ -2230,6 +2658,14 @@
       if (e.key === 'Enter') { e.preventDefault(); addQuest(); }
     });
     el('#resetQuestsBtn').addEventListener('click', resetQuests);
+
+    el('#routineBtn').addEventListener('click', function () { toggleRoutine(); });
+    el('#routineCloseBtn').addEventListener('click', function () { toggleRoutine(false); });
+    el('#routineAddBtn').addEventListener('click', addRoutine);
+    el('#routineText').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); addRoutine(); }
+    });
+    el('#routineRestoreBtn').addEventListener('click', restoreRoutine);
 
     elAll('.nick').forEach(function (b) {
       b.addEventListener('click', function () {
