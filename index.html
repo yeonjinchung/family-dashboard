@@ -270,17 +270,18 @@
   }
 
   /* 요일 반복 선택 */
-  .day-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .day-row{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;}
   .day-row-label{font-size:12.5px;font-weight:900;color:var(--ink-2);flex:0 0 auto;}
-  .day-picker{display:flex;gap:5px;flex-wrap:wrap;flex:1;min-width:0;}
+  .day-quick{display:flex;gap:6px;flex:1;min-width:0;}
+  .day-picker{display:flex;gap:5px;min-width:0;}
   .day-btn{
-    min-width:42px;height:38px;padding:0 10px;border:2px solid transparent;border-radius:12px;
+    flex:1 1 0;min-width:0;height:40px;padding:0 6px;border:2px solid transparent;border-radius:12px;
     background:#F5F1FC;color:#6E5C80;font-size:14px;font-weight:900;cursor:pointer;
-    display:inline-grid;place-items:center;
+    display:grid;place-items:center;white-space:nowrap;
   }
   .day-btn.active{background:#FFF3D2;border-color:#FFD868;color:#8A6200;}
-  .day-btn.all{font-size:13px;padding:0 9px;}
-  .day-btn.once{font-size:13px;padding:0 9px;}
+  .day-btn.all,.day-btn.once{flex:0 0 auto;min-width:74px;font-size:13.5px;}
+  .day-btn.all.active{background:#EAF6FF;border-color:#A9D5F5;color:#1F6E9C;}
   .day-btn.once.active{background:#FFE7EF;border-color:#FFB8CC;color:#B4416B;}
   .day-hint{font-size:12.5px;font-weight:800;color:#7A64A8;}
   .qtag{
@@ -690,9 +691,10 @@
         </div>
 
         <div class="day-row">
-          <span class="day-row-label">이 퀘스트가 뜰 요일</span>
-          <div class="day-picker" id="questDays"></div>
+          <span class="day-row-label">반복</span>
+          <div class="day-quick" id="questQuick"></div>
         </div>
+        <div class="day-picker" id="questDays"></div>
         <div class="day-hint" id="questDaysHint">월요일마다 떠요</div>
 
         <div class="routine-panel" id="routinePanel" hidden>
@@ -1749,24 +1751,30 @@
     renderDayPicker();
   }
 
+  function dayChip(label) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'day-btn'
+      + (label === CHIP_ALL ? ' all' : (label === CHIP_ONCE ? ' once' : ''))
+      + (isChipActive(label) ? ' active' : '');
+    b.setAttribute('data-day', label);
+    b.setAttribute('aria-label', label + ' 반복');
+    b.textContent = label;
+    b.addEventListener('click', function () { pickDay(label); });
+    return b;
+  }
+
+  /* 매일 · 오늘만은 한 줄, 월~일은 요일 줄 */
   function renderDayPicker() {
+    var quick = el('#questQuick');
+    quick.innerHTML = '';
+    quick.appendChild(dayChip(CHIP_ALL));
+    quick.appendChild(dayChip(CHIP_ONCE));
+
     var box = el('#questDays');
     box.innerHTML = '';
-    var labels = [CHIP_ALL].concat(DAYS).concat([CHIP_ONCE]);
-    for (var i = 0; i < labels.length; i++) {
-      (function (label) {
-        var b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'day-btn'
-          + (label === CHIP_ALL ? ' all' : (label === CHIP_ONCE ? ' once' : ''))
-          + (isChipActive(label) ? ' active' : '');
-        b.setAttribute('data-day', label);
-        b.setAttribute('aria-label', label + ' 반복');
-        b.textContent = label;
-        b.addEventListener('click', function () { pickDay(label); });
-        box.appendChild(b);
-      })(labels[i]);
-    }
+    for (var i = 0; i < DAYS.length; i++) box.appendChild(dayChip(DAYS[i]));
+
     el('#questDaysHint').textContent = daySelectionLabel();
   }
 
