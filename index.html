@@ -1749,7 +1749,9 @@
       list.appendChild(empty);
     }
 
-    el('#questDay').textContent = today ? '오늘' : viewDay + '요일 예정';
+    /* 오늘 탭에서는 탭의 '오늘' 배지로 충분해서 요일 칩은 미리 보기에서만 보인다 */
+    el('#questDay').hidden = today;
+    el('#questDay').textContent = today ? '오늘' : viewDay + '요일 미리보기';
     el('#viewNote').hidden = today;
     el('#newQuestText').setAttribute('placeholder', today
       ? '퀘스트 추가 (예: 받아쓰기 연습)'
