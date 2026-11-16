@@ -1501,15 +1501,84 @@
     }
   }
 
+  /* 한 기기에 먼저 쌓인 기록과 방의 기록을 처음 한 번 합친다
+     (포인트·경험치는 큰 쪽, 목록은 id 기준 합집합 → 어느 기기도 기존 기록을 잃지 않는다) */
+  function unionById(a, b, key) {
+    var out = [], seen = {}, i, it, k;
+    a = Array.isArray(a) ? a : [];
+    b = Array.isArray(b) ? b : [];
+    for (i = 0; i < a.length; i++) {
+      it = a[i];
+      if (!it) continue;
+      k = String(key ? (it[key] || '') : (it.id || (it.text || '') + '|' + (it.who || '')));
+      if (k === '') continue;
+      if (seen[k]) continue;
+      seen[k] = 1;
+      out.push(it);
+    }
+    for (i = 0; i < b.length; i++) {
+      it = b[i];
+      if (!it) continue;
+      k = String(key ? (it[key] || '') : (it.id || (it.text || '') + '|' + (it.who || '')));
+      if (k === '' || seen[k]) continue;
+      seen[k] = 1;
+      out.push(it);
+    }
+    return out;
+  }
+
+  function mergeStates(remote, local) {
+    var out = normalizeState(remote);
+    var loc = normalizeState(local);
+    var id, i, k;
+
+    /* 포켓몬: 파트너는 원격에 없을 때만 이 기기 것을 쓰고, 점수는 큰 쪽 */
+    if (!out.pokemon.partner && loc.pokemon.partner) out.pokemon.partner = loc.pokemon.partner;
+    if (loc.pokemon.points > out.pokemon.points) out.pokemon.points = loc.pokemon.points;
+    for (id in loc.pokemon.mons) {
+      if (!Object.prototype.hasOwnProperty.call(loc.pokemon.mons, id)) continue;
+      var l = loc.pokemon.mons[id], r = out.pokemon.mons[id];
+      if (!r) { out.pokemon.mons[id] = { level: l.level, xp: l.xp }; continue; }
+      if (l.level > r.level || (l.level === r.level && l.xp > r.xp)) {
+        out.pokemon.mons[id] = { level: l.level, xp: l.xp };
+      }
+    }
+    for (i = 0; i < loc.pokemon.dex.length; i++) {
+      if (out.pokemon.dex.indexOf(loc.pokemon.dex[i]) < 0) out.pokemon.dex.push(loc.pokemon.dex[i]);
+    }
+    if (!out.pokemon.eggDate && loc.pokemon.eggDate) {
+      out.pokemon.eggDate = loc.pokemon.eggDate;
+      out.pokemon.eggPoke = loc.pokemon.eggPoke;
+    }
+
+    /* 오늘 퀘스트 체크: 원격 것을 두고 이 기기 것만 더한다 */
+    if (out.quests.date === loc.quests.date) {
+      for (k in loc.quests.done) {
+        if (Object.prototype.hasOwnProperty.call(loc.quests.done, k) && !(k in out.quests.done)) {
+          out.quests.done[k] = loc.quests.done[k];
+        }
+      }
+    }
+
+    /* 목록들: id 기준 합집합 */
+    out.shopping = unionById(out.shopping, loc.shopping);
+    out.events.items = unionById(out.events.items, loc.events.items);
+    out.board.messages = unionById(out.board.messages, loc.board.messages)
+      .sort(function (x, y) { return (Number(x.ts) || 0) - (Number(y.ts) || 0); });
+    return out;
+  }
+
   /* 가족 코드로 방에 들어간다 */
-  function joinRoom(pin) {
+  function joinRoom(pin, isFirst) {
     return sha256Hex(ROOM_SALT + pin).then(function (hash) {
       roomKey = hash;
       if (!sb()) throw new Error('NO_LIB');
       return fetchRoom().then(function (row) {
         var remote = row && row.state ? row.state : null;
-        if (isBlankState(remote) && !isBlankState(state)) {
-          /* 이 기기에 이미 쌓인 기록이 있으면 그걸 방의 첫 내용으로 올린다 */
+        if (isFirst && !isBlankState(state)) {
+          /* 이 기기에 이미 쌓인 기록이 있으면 방의 기록과 합쳐서 올린다 */
+          var merged = mergeStates(remote, state);
+          applyRemote(merged);
           saveLocal();
           pushNow();
         } else {
@@ -1540,7 +1609,8 @@
   }
 
   function tryJoin(pin) {
-    return joinRoom(pin).then(function () {
+    var isFirst = !savedPin();
+    return joinRoom(pin, isFirst).then(function () {
       rememberPin(pin);
       showGate(false);
       gateMsg('');
@@ -1583,7 +1653,7 @@
     var pin = savedPin();
     if (!pin) { setSync('off'); showGate(true); return; }
     setSync('wait');
-    joinRoom(pin).then(function () {
+    joinRoom(pin, false).then(function () {
       showGate(false);
     }).catch(function (err) {
       var code = (err && err.message) || '';
