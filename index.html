@@ -1512,6 +1512,14 @@
     return list.map(function (x) { return x.name; }).join(', ');
   }
 
+  /* 이름 끝소리에 맞춰 '와/과'를 고른다 (잉어킹과, 파이리와) */
+  function withParticle(name) {
+    var s = String(name || '');
+    var code = s.charCodeAt(s.length - 1);
+    if (!(code >= 0xAC00 && code <= 0xD7A3)) return s + '와';
+    return s + (((code - 0xAC00) % 28) ? '과' : '와');
+  }
+
   function dexCount() {
     var dex = state.pokemon.dex || [], n = 0;
     for (var i = 0; i < dex.length; i++) { if (dex[i] <= TOTAL_DEX) n++; }
@@ -1580,7 +1588,7 @@
     }
     if (newly.length) {
       var poke = currentPoke();
-      if (poke) el('#pokeHint').textContent = '👶🏻 로건 · 8세 · 초1 · ' + poke.name + '와 함께!';
+      if (poke) el('#pokeHint').textContent = '👶🏻 로건 · 8세 · 초1 · ' + withParticle(poke.name) + ' 함께!';
       if (!quiet) {
         confetti(140);
         playFanfare();
@@ -2204,7 +2212,7 @@
     playFanfare();
     confetti(80);
     var info = currentPoke();
-    if (info) toast(info.emoji + ' ' + info.name + '와 함께! (Lv.' + levelOf(info.id) + ')');
+    if (info) toast(info.emoji + ' ' + withParticle(info.name) + ' 함께! (Lv.' + levelOf(info.id) + ')');
   }
 
   function renderDex() {
