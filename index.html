@@ -598,7 +598,8 @@
   .ev:active{transform:scale(.99);}
   .ev-edit{
     flex:0 0 auto;width:30px;height:30px;border-radius:10px;border:0;
-    background:#F4E5EC;color:#8C2749;font-size:14px;font-weight:900;cursor:pointer;
+    background:#F1DDE7;color:#7D1D3F;font-size:14px;font-weight:900;cursor:pointer;
+    line-height:1;padding:0;
   }
   .ev-edit-panel{
     display:flex;flex-direction:column;gap:7px;
@@ -864,7 +865,7 @@
         <li><b>⚡ 포켓몬 키우기</b>는 <b>파트너 변경</b>이나 <b>도감</b>에서 잡은 포켓몬을 눌러 파트너를 바꿀 수 있어요. <b>오늘의 퀘스트</b>를 체크할 때마다 그 파트너에게 경험치가 쌓이고, 경험치가 차면 레벨업해요. 진화는 실제 도감 순서대로 <b>1차 Lv.5 · 2차 Lv.10</b>이고, 종마다 레벨이 따로 남아서 바꿔 가며 키울 수 있어요.</li>
         <li><b>🗓 요일 탭</b>은 <b>오늘의 퀘스트</b> 제목 바로 아래 <b>월~일</b> 탭이에요. 다른 요일을 누르면 그 요일 퀘스트를 미리 볼 수 있고, 아래 입력창으로 그 요일 루틴에 바로 넣거나 <b>✕</b>로 뺄 수 있어요. 체크와 경험치는 <b>오늘 탭</b>에서만 되고, 다른 요일을 보는 동안에는 자물쇠로 잠겨 있어요. <b>매일</b>을 고르면 일주일 모두에 들어가요. 뺐던 기본 항목은 <b>기본 복원</b>으로 다시 채웁니다.</li>
         <li><b>🥚 올클리어 알</b>은 오늘 퀘스트를 <b>모두</b> 체크하면 하루 한 번 부화해요. 아직 도감에 없는 포켓몬이 등록되고 보너스 경험치도 받아요.</li>
-        <li><b>📅 가족 달력</b>은 날짜를 누른 뒤 시간·내용·담당(👩🏻 연진 / 👶🏻 로건 / 👦🏻 지민 / 🏡 함께)을 골라 <b>＋ 일정 추가</b>를 누르면 돼요. 담긴 일정을 누르면(또는 <b>✎</b>) 시간·내용·담당을 다시 고칠 수 있어요.</li>
+        <li><b>📅 가족 달력</b>은 날짜를 누른 뒤 시간·내용·담당(👩🏻 연진 / 👶🏻 로건 / 👦🏻 지민 / 🏡 함께)을 골라 <b>＋ 일정 추가</b>를 누르면 돼요. 담긴 일정을 누르면(또는 <b>✏️</b>) 시간·내용·담당을 다시 고칠 수 있어요.</li>
         <li><b>🛒 해주세요 리스트</b>는 <b>장보기</b>·<b>사주세요</b>·<b>빌려다 주세요</b> 셋으로 나눠 담고, 부탁한 사람을 골라 둘 수 있어요. 한 것은 눌러서 체크하고 <b>완료 비우기</b>로 정리해요.</li>
         <li><b>🏡 가족 코드</b>는 처음 한 번만 넣으면 돼요. 이 기기에 기억해 두고, 같은 코드를 넣은 폰·태블릿은 달력·퀘스트·포켓몬·쇼핑리스트·한마디가 <b>실시간으로 함께</b> 바뀌어요. 화면 위 <b>🟢 실시간 연결됨</b> 표시로 연결 상태를 볼 수 있고, 코드를 바꾸려면 <b>🔒 코드</b>를 누르세요.</li>
       </ul>
@@ -3071,7 +3072,7 @@
         var edit = document.createElement('button');
         edit.type = 'button';
         edit.className = 'ev-edit';
-        edit.textContent = '✎';
+        edit.textContent = '✏️';
         edit.setAttribute('aria-label', '일정 고치기');
         edit.addEventListener('click', function (e) {
           if (e && e.stopPropagation) e.stopPropagation();
