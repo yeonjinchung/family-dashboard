@@ -506,16 +506,17 @@
     background:var(--mint-soft);color:#2E8A6F;white-space:nowrap;
   }
   .shop-badge.wish{background:var(--lemon-soft);color:#8A6200;}
+  .shop-badge.borrow{background:#E5EFFA;color:#3A6491;}
   .shop-text{font-size:16px;font-weight:800;line-height:1.25;word-break:break-word;}
   .shop.done .shop-text{color:#3E8F76;text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:#A9E2CE;}
   .shop-who{font-size:12.5px;font-weight:800;color:var(--ink-2);}
   .shop-form{display:flex;flex-direction:column;gap:9px;border-top:1px dashed var(--line);padding-top:12px;}
   .shop-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
   .shop-row > input{flex:1 1 150px;width:auto;min-width:120px;}
-  .shop-kind{display:flex;gap:6px;background:#F9F0F3;padding:5px;border-radius:15px;flex:0 0 auto;}
+  .shop-kind{display:flex;gap:6px;flex-wrap:wrap;background:#F9F0F3;padding:5px;border-radius:15px;flex:0 1 auto;}
   .kind-btn{
-    height:42px;padding:0 13px;border:0;border-radius:11px;background:transparent;
-    font-size:14.5px;font-weight:900;color:#6E4A55;cursor:pointer;white-space:nowrap;
+    height:42px;padding:0 11px;border:0;border-radius:11px;background:transparent;
+    font-size:14px;font-weight:900;color:#6E4A55;cursor:pointer;white-space:nowrap;
   }
   .kind-btn.active{background:#fff;color:var(--ink);box-shadow:0 3px 10px rgba(125,29,63,.14);}
   .shop-who-row{display:flex;gap:6px;flex-wrap:wrap;}
@@ -591,6 +592,28 @@
   }
   .tag-btn.active{background:var(--tag);color:#fff;box-shadow:0 3px 0 var(--tag-shadow);}
   .tag-btn.t-jimin.active{color:#6B4B00;}
+
+  /* 일정 항목을 눌러 고치기 */
+  .ev{cursor:pointer;}
+  .ev:active{transform:scale(.99);}
+  .ev-edit{
+    flex:0 0 auto;width:30px;height:30px;border-radius:10px;border:0;
+    background:#F4E5EC;color:#8C2749;font-size:14px;font-weight:900;cursor:pointer;
+  }
+  .ev-edit-panel{
+    display:flex;flex-direction:column;gap:7px;
+    background:#FFF6F9;border:2px dashed #E9C3D2;border-radius:18px;padding:12px 12px 13px;
+    animation:panelIn .16s ease;
+  }
+  @keyframes panelIn{from{opacity:.4;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+  .edit-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+  .edit-head b{font-size:16px;font-weight:900;color:var(--wine-deep);}
+  .edit-label{font-size:12.5px;font-weight:900;color:var(--ink-2);margin-top:3px;}
+  .edit-time-row{display:flex;gap:8px;align-items:stretch;}
+  .edit-time-row input[type="time"]{flex:1 1 auto;min-width:0;}
+  .edit-time-row .btn{flex:0 0 auto;}
+  .edit-actions{display:flex;gap:8px;margin-top:6px;}
+  .edit-actions .btn{flex:1 1 0;}
 
   /* ---------- 안내 ---------- */
   .guide{margin-top:16px;background:rgba(255,255,255,.7);border-radius:20px;padding:14px 18px;box-shadow:var(--shadow);}
@@ -669,6 +692,25 @@
               <span class="hint" id="evCount">일정 0개</span>
             </div>
             <ul class="ev-list" id="evList"></ul>
+            <div class="ev-edit-panel" id="evEdit" hidden>
+              <div class="edit-head">
+                <b id="evEditTitle">✏️ 일정 고치기</b>
+                <span class="hint" id="evEditDate"></span>
+              </div>
+              <label class="edit-label" for="evEditTime">시간</label>
+              <div class="edit-time-row">
+                <input type="time" id="evEditTime" aria-label="일정 시간">
+                <button class="btn btn-ghost small" id="evEditTimeClear" type="button">시간 없음</button>
+              </div>
+              <label class="edit-label" for="evEditText">내용</label>
+              <input type="text" id="evEditText" maxlength="40" placeholder="무슨 일정인가요?" aria-label="일정 내용">
+              <label class="edit-label">담당</label>
+              <div class="ev-tags" id="evEditTags"></div>
+              <div class="edit-actions">
+                <button class="btn btn-ghost" id="evEditCancel" type="button">취소</button>
+                <button class="btn btn-purple" id="evEditSave" type="button">저장</button>
+              </div>
+            </div>
             <div class="ev-form">
               <div class="ev-row">
                 <input type="time" id="evTime" aria-label="일정 시간">
@@ -772,14 +814,14 @@
       <!-- 쇼핑리스트 -->
       <section class="card" style="--tint:#DEF7EE">
         <div class="card-head">
-          <h2>🛒 쇼핑리스트</h2>
-          <span class="hint" id="shopHint">장 볼 것 · 부탁할 것</span>
+          <h2>🛒 해주세요 리스트</h2>
+          <span class="hint" id="shopHint">장보기 · 사주세요 · 빌려다 주세요</span>
         </div>
         <div class="shop-filters" id="shopFilters"></div>
         <ul class="shop-list" id="shopList"></ul>
         <div class="shop-form">
           <div class="shop-row">
-            <input id="shopText" type="text" placeholder="살 것을 적어요 (예: 우유)" maxlength="40" aria-label="쇼핑 품목">
+            <input id="shopText" type="text" placeholder="부탁할 것을 적어요 (예: 우유)" maxlength="40" aria-label="해주세요 품목">
             <button class="btn btn-mint small" id="addShopBtn" type="button">＋ 추가</button>
           </div>
           <div class="shop-row">
@@ -822,8 +864,8 @@
         <li><b>⚡ 포켓몬 키우기</b>는 <b>파트너 변경</b>이나 <b>도감</b>에서 잡은 포켓몬을 눌러 파트너를 바꿀 수 있어요. <b>오늘의 퀘스트</b>를 체크할 때마다 그 파트너에게 경험치가 쌓이고, 경험치가 차면 레벨업해요. 진화는 실제 도감 순서대로 <b>1차 Lv.5 · 2차 Lv.10</b>이고, 종마다 레벨이 따로 남아서 바꿔 가며 키울 수 있어요.</li>
         <li><b>🗓 요일 탭</b>은 <b>오늘의 퀘스트</b> 제목 바로 아래 <b>월~일</b> 탭이에요. 다른 요일을 누르면 그 요일 퀘스트를 미리 볼 수 있고, 아래 입력창으로 그 요일 루틴에 바로 넣거나 <b>✕</b>로 뺄 수 있어요. 체크와 경험치는 <b>오늘 탭</b>에서만 되고, 다른 요일을 보는 동안에는 자물쇠로 잠겨 있어요. <b>매일</b>을 고르면 일주일 모두에 들어가요. 뺐던 기본 항목은 <b>기본 복원</b>으로 다시 채웁니다.</li>
         <li><b>🥚 올클리어 알</b>은 오늘 퀘스트를 <b>모두</b> 체크하면 하루 한 번 부화해요. 아직 도감에 없는 포켓몬이 등록되고 보너스 경험치도 받아요.</li>
-        <li><b>📅 가족 달력</b>은 날짜를 누른 뒤 시간·내용·담당(👩🏻 연진 / 👶🏻 로건 / 👦🏻 지민 / 🏡 함께)을 골라 <b>＋ 일정 추가</b>를 누르면 돼요.</li>
-        <li><b>🛒 쇼핑리스트</b>는 <b>장보기</b>와 <b>사주세요</b>로 나눠 담고, 부탁한 사람을 골라 둘 수 있어요. 산 것은 눌러서 체크하고 <b>완료 비우기</b>로 정리해요.</li>
+        <li><b>📅 가족 달력</b>은 날짜를 누른 뒤 시간·내용·담당(👩🏻 연진 / 👶🏻 로건 / 👦🏻 지민 / 🏡 함께)을 골라 <b>＋ 일정 추가</b>를 누르면 돼요. 담긴 일정을 누르면(또는 <b>✎</b>) 시간·내용·담당을 다시 고칠 수 있어요.</li>
+        <li><b>🛒 해주세요 리스트</b>는 <b>장보기</b>·<b>사주세요</b>·<b>빌려다 주세요</b> 셋으로 나눠 담고, 부탁한 사람을 골라 둘 수 있어요. 한 것은 눌러서 체크하고 <b>완료 비우기</b>로 정리해요.</li>
         <li><b>🏡 가족 코드</b>는 처음 한 번만 넣으면 돼요. 이 기기에 기억해 두고, 같은 코드를 넣은 폰·태블릿은 달력·퀘스트·포켓몬·쇼핑리스트·한마디가 <b>실시간으로 함께</b> 바뀌어요. 화면 위 <b>🟢 실시간 연결됨</b> 표시로 연결 상태를 볼 수 있고, 코드를 바꾸려면 <b>🔒 코드</b>를 누르세요.</li>
       </ul>
     </details>
@@ -1310,7 +1352,7 @@
         return {
           id: String(x.id || ('s' + Math.random().toString(36).slice(2, 8))),
           text: String(x.text).trim(),
-          kind: x.kind === 'wish' ? 'wish' : 'grocery',
+          kind: (x.kind === 'wish' || x.kind === 'borrow') ? x.kind : 'grocery',
           who: (x.who === 'kid' || x.who === 'jimin') ? x.who : 'mom',
           done: !!x.done
         };
@@ -2923,7 +2965,7 @@
       m = now.getMonth() + 1;
     }
     el('#calTitle').textContent = y + '년 ' + m + '월';
-    el('#calHint').textContent = '이 달 일정 ' + monthEventCount(view) + '개 · 날짜를 눌러 추가';
+    el('#calHint').textContent = '이 달 일정 ' + monthEventCount(view) + '개 · 날짜를 눌러 추가 · 누르면 고치기';
 
     var head = el('#calHead');
     head.innerHTML = '';
@@ -3021,7 +3063,25 @@
         del.className = 'x-btn';
         del.textContent = '✕';
         del.setAttribute('aria-label', '일정 지우기');
-        del.addEventListener('click', function () { deleteEvent(ev.id); });
+        del.addEventListener('click', function (e) {
+          if (e && e.stopPropagation) e.stopPropagation();
+          deleteEvent(ev.id);
+        });
+
+        var edit = document.createElement('button');
+        edit.type = 'button';
+        edit.className = 'ev-edit';
+        edit.textContent = '✎';
+        edit.setAttribute('aria-label', '일정 고치기');
+        edit.addEventListener('click', function (e) {
+          if (e && e.stopPropagation) e.stopPropagation();
+          openEvEdit(ev.id);
+        });
+
+        /* 항목을 눌러도 고치기 화면이 열린다 */
+        li.addEventListener('click', function () { openEvEdit(ev.id); });
+
+        li.appendChild(edit);
         li.appendChild(del);
 
         list.appendChild(li);
@@ -3089,9 +3149,105 @@
   function deleteEvent(id) {
     ensureCalState();
     state.events.items = state.events.items.filter(function (x) { return x.id !== id; });
+    if (evEditId && evEditId === id) closeEvEdit();
     save();
     renderCalendar();
     toast('일정을 지웠어요');
+  }
+
+  /* ---------- 일정 고치기 (시간·내용·담당) ---------- */
+  var evEditId = '', evEditTag = 'mom';
+
+  function findEvent(id) {
+    var items = (state.events && Array.isArray(state.events.items)) ? state.events.items : [];
+    for (var i = 0; i < items.length; i++) {
+      if (items[i] && items[i].id === id) return items[i];
+    }
+    return null;
+  }
+
+  function renderEvEditTags() {
+    var wrap = el('#evEditTags');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    for (var i = 0; i < CAL_TAGS.length; i++) {
+      (function (t) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'tag-btn ' + t.cls + (t.key === evEditTag ? ' active' : '');
+        b.setAttribute('data-tag', t.key);
+        b.textContent = t.emoji + ' ' + t.label;
+        b.addEventListener('click', function () {
+          evEditTag = t.key;
+          renderEvEditTags();
+        });
+        wrap.appendChild(b);
+      })(CAL_TAGS[i]);
+    }
+  }
+
+  function openEvEdit(id) {
+    ensureCalState();
+    var ev = findEvent(id);
+    if (!ev) { toast('일정을 찾지 못했어요'); renderCalendar(); return; }
+    evEditId = id;
+    evEditTag = calTagInfo(ev.tag).key;
+
+    var d = dateOf(ev.date || state.events.selected);
+    var label = el('#evEditDate');
+    if (label) {
+      label.textContent = (d.getMonth() + 1) + '월 ' + d.getDate() + '일 (' + WEEK_LABEL[d.getDay()] + ')';
+    }
+    var tIn = el('#evEditTime');
+    if (tIn) tIn.value = ev.time || '';
+    var xIn = el('#evEditText');
+    if (xIn) xIn.value = ev.text || '';
+
+    renderEvEditTags();
+    var sheet = el('#evEdit');
+    if (sheet) {
+      sheet.hidden = false;
+      if (sheet.scrollIntoView) {
+        try { sheet.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {}
+      }
+    }
+  }
+
+  function closeEvEdit() {
+    evEditId = '';
+    var sheet = el('#evEdit');
+    if (sheet) sheet.hidden = true;
+  }
+
+  /* 고친 내용은 추가와 같은 파이프라인(save → 기기 저장 + 가족 방 전송)으로 내보낸다 */
+  function saveEvEdit() {
+    ensureCalState();
+    var ev = findEvent(evEditId);
+    if (!ev) { closeEvEdit(); toast('이미 지워진 일정이에요'); renderCalendar(); return; }
+
+    var tIn = el('#evEditTime');
+    var timeVal = String(tIn ? tIn.value : '').trim();
+    if (timeVal.length > 5) timeVal = timeVal.slice(0, 5);
+
+    var xIn = el('#evEditText');
+    var text = String(xIn ? xIn.value : '').trim();
+    if (!text) {
+      toast('일정 내용을 적어주세요 ✏️');
+      if (xIn && xIn.focus) { try { xIn.focus(); } catch (e) {} }
+      return;
+    }
+
+    ev.time = timeVal;
+    ev.text = text;
+    ev.tag = calTagInfo(evEditTag).key;
+    if (!ev.date) ev.date = state.events.selected;
+    state.events.selected = ev.date;
+
+    save();
+    closeEvEdit();
+    renderCalendar();
+    playChime();
+    toast('일정을 고쳤어요 ✏️');
   }
 
   /* =========================================================
@@ -3099,7 +3255,8 @@
      ========================================================= */
   var SHOP_KINDS = [
     { key: 'grocery', emoji: '🥬', label: '장보기' },
-    { key: 'wish', emoji: '🎁', label: '사주세요' }
+    { key: 'wish', emoji: '🎁', label: '사주세요' },
+    { key: 'borrow', emoji: '🤲', label: '빌려다 주세요' }
   ];
   var SHOP_WHO = [
     { key: 'mom', emoji: '👩🏻', label: '연진', cls: 't-mom' },
@@ -3242,9 +3399,11 @@
       empty.className = 'empty';
       empty.textContent = shopFilter === 'wish'
         ? '아직 사주세요 목록이 비어 있어요. 아래에서 적어보세요!'
-        : (shopFilter === 'grocery'
-          ? '아직 장볼 것이 없어요. 아래에서 적어보세요!'
-          : '쇼핑리스트가 비어 있어요. 아래에서 적어보세요!');
+        : (shopFilter === 'borrow'
+          ? '아직 빌려다 주세요 목록이 비어 있어요. 아래에서 적어보세요!'
+          : (shopFilter === 'grocery'
+            ? '아직 장볼 것이 없어요. 아래에서 적어보세요!'
+            : '해주세요 리스트가 비어 있어요. 아래에서 적어보세요!'));
       list.appendChild(empty);
     }
 
@@ -3253,16 +3412,16 @@
     var leftAll = 0, doneAll = 0;
     for (var t = 0; t < items.length; t++) { if (items[t].done) doneAll++; else leftAll++; }
     el('#shopHint').textContent = !items.length
-      ? '장 볼 것 · 부탁할 것'
+      ? '장보기 · 사주세요 · 빌려다 주세요'
       : (leftAll ? '남은 ' + leftAll + '개' + (doneAll ? ' · 산 것 ' + doneAll + '개' : '')
-                 : '다 샀어요! 🎉');
+                 : '다 했어요! 🎉');
     el('#clearDoneShop').hidden = doneAll === 0;
   }
 
   function addShop() {
     var input = el('#shopText');
     var text = String(input.value || '').trim();
-    if (!text) { toast('살 것을 적어주세요 ✏️'); input.focus(); return; }
+    if (!text) { toast('부탁할 것을 적어주세요 ✏️'); input.focus(); return; }
     shopItems().unshift({
       id: 's' + Date.now() + Math.floor(Math.random() * 1000),
       text: text,
@@ -3274,7 +3433,8 @@
     input.value = '';
     renderShopping();
     playChime();
-    toast(shopKind === 'wish' ? '사주세요에 담았어요 🎁' : '장보기에 담았어요 🛒');
+    toast(shopKind === 'wish' ? '사주세요에 담았어요 🎁'
+      : (shopKind === 'borrow' ? '빌려다 주세요에 담았어요 🤲' : '장보기에 담았어요 🥬'));
     input.focus();
   }
 
@@ -3291,7 +3451,7 @@
     state.shopping = shopItems().filter(function (x) { return x.id !== id; });
     save();
     renderShopping();
-    toast('쇼핑리스트에서 지웠어요');
+    toast('해주세요 리스트에서 지웠어요');
   }
 
   function clearDoneShop() {
@@ -3410,6 +3570,26 @@
       if (e.key === 'Enter') { e.preventDefault(); addEvent(); }
     });
 
+    /* 일정 고치기 시트 */
+    var evSaveBtn = el('#evEditSave');
+    if (evSaveBtn) evSaveBtn.addEventListener('click', saveEvEdit);
+    var evCancelBtn = el('#evEditCancel');
+    if (evCancelBtn) evCancelBtn.addEventListener('click', closeEvEdit);
+    var evTimeClear = el('#evEditTimeClear');
+    if (evTimeClear) evTimeClear.addEventListener('click', function () {
+      var tIn = el('#evEditTime');
+      if (tIn) tIn.value = '';
+    });
+    var evEditText = el('#evEditText');
+    if (evEditText) evEditText.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); saveEvEdit(); }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (!e || e.key !== 'Escape') return;
+      var sheet = el('#evEdit');
+      if (sheet && sheet.hidden === false) closeEvEdit();
+    });
+
     el('#addShopBtn').addEventListener('click', addShop);
     el('#shopText').addEventListener('keydown', function (e) {
       if (e.key === 'Enter') { e.preventDefault(); addShop(); }
@@ -3449,6 +3629,7 @@
     checkNewDay();
     syncEvolution(true);
     pruneBoard();
+    closeEvEdit();
     saveLocal();
     bindEvents();
     renderAll();
