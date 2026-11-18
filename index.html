@@ -3689,6 +3689,13 @@
     toast('오늘로 돌아왔어요 📅');
   }
 
+  /* 같은 밀리초에 두 일정을 넣어도 id가 겹치지 않게 일련번호를 붙인다 */
+  var evSeq = 0;
+  function newEventId() {
+    evSeq += 1;
+    return 'e' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 1000) + '-' + evSeq;
+  }
+
   function addEvent() {
     ensureCalState();
     var input = el('#evText');
@@ -3700,7 +3707,7 @@
     if (timeVal && timeVal.length > 5) timeVal = timeVal.slice(0, 5);
 
     state.events.items.push({
-      id: 'e' + Date.now() + Math.floor(Math.random() * 1000),
+      id: newEventId(),
       date: state.events.selected,
       time: timeVal,
       text: text,
