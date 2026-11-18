@@ -69,11 +69,11 @@
   button{touch-action:manipulation;}
   h2,h3{margin:0;}
 
-  /* ---------- 상단 ---------- */
+  /* ---------- 상단 + 탭 ---------- */
+  .top-wrap{position:sticky;top:0;z-index:30;}
   .top{
-    position:sticky;
-    top:0;
-    z-index:30;
+    position:relative;
+    z-index:2;
     display:flex;
     flex-wrap:wrap;
     gap:10px 16px;
@@ -103,6 +103,63 @@
   .pill.sync.off{background:#F3EAEE;color:var(--ink-2);}
   button.pill{font-family:inherit;cursor:pointer;border:0;color:var(--ink);}
   button.pill:hover{box-shadow:0 5px 16px rgba(125,29,63,.18);}
+
+  /* ---------- 탭 바 (🏡 가족 홈 / ⚡ 포켓몬) ---------- */
+  .tabbar{
+    position:relative;
+    z-index:1;
+    display:flex;
+    gap:8px;
+    padding:8px 14px 10px;
+    background:rgba(252,247,249,.86);
+    -webkit-backdrop-filter:blur(16px);
+    backdrop-filter:blur(16px);
+    border-bottom:1px solid rgba(125,29,63,.09);
+  }
+  .tab-btn{
+    flex:1 1 0;
+    min-width:0;
+    min-height:52px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:0 12px;
+    border:2px solid transparent;
+    border-radius:16px;
+    background:#F7E9EE;
+    color:#7A4553;
+    font-family:inherit;
+    font-size:16px;
+    font-weight:900;
+    letter-spacing:-.01em;
+    cursor:pointer;
+    touch-action:manipulation;
+    transition:background .18s ease, color .18s ease, box-shadow .18s ease, transform .12s ease;
+  }
+  .tab-btn .tab-ico{font-size:18px;line-height:1;}
+  .tab-btn:active{transform:translateY(1px);}
+  .tab-btn.active{
+    background:linear-gradient(180deg,#9E2A50,#7D1D3F);
+    color:#fff;
+    border-color:#5E1430;
+    box-shadow:0 6px 16px rgba(94,20,48,.26);
+  }
+  .tab-badge{
+    font-size:11.5px;
+    font-weight:900;
+    padding:2px 8px;
+    border-radius:999px;
+    background:#fff;
+    color:#7D1D3F;
+    white-space:nowrap;
+  }
+  .tab-btn.active .tab-badge{background:rgba(255,255,255,.24);color:#fff;}
+  .tab-badge.hot{background:linear-gradient(180deg,#FFD873,#FFC94D);color:#6B4B00;animation:eggPop .8s cubic-bezier(.2,1.6,.4,1);}
+  @media (min-width:760px){
+    .tabbar{padding:10px 18px 12px;gap:10px;}
+    .tab-btn{flex:0 1 240px;min-height:56px;font-size:17px;}
+  }
 
   /* ---------- 가족 코드(입장) 화면 ---------- */
   .gate{
@@ -475,6 +532,91 @@
   .dex-list li .noimg{font-size:18px;line-height:26px;}
   .dex-list li.empty-dex{background:transparent;padding:6px 0;color:var(--ink-2);font-weight:700;}
 
+  /* ---------- 화면 탭 패널 ---------- */
+  .panel{display:block;}
+  .poke-tab-grid{display:grid;gap:14px;grid-template-columns:minmax(0,1fr);align-items:start;}
+  @media (min-width:1080px){
+    .poke-tab-grid{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:18px;}
+  }
+
+  /* 포켓몬 탭 — 파트너를 크게 */
+  .poke-hero-card{gap:16px;}
+  .poke-today{
+    display:flex;align-items:center;gap:8px;
+    font-size:13.5px;font-weight:800;color:#8C5568;
+    background:#FCF4F7;border:2px dashed #F0D8E2;border-radius:15px;padding:9px 12px;line-height:1.45;
+  }
+  .poke-today.done{background:linear-gradient(135deg,#FFF6DC,#E9FAF3);border:2px solid #FFD868;color:#7A5A00;}
+  .poke-today.ready{background:#FFF9E6;border:2px dashed #FFDE96;color:#8A6200;}
+  .poke-stage{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .poke-art-big{
+    flex:1 1 230px;
+    width:auto;height:auto;aspect-ratio:1/1;max-width:330px;min-width:190px;
+    border-radius:32px;
+    background:radial-gradient(circle at 50% 36%, #FFFDF5 0%, #FFF1CE 56%, #FBE2EA 100%);
+    border:3px solid #FFEBB8;
+    box-shadow:inset 0 -10px 0 rgba(255,201,77,.16), 0 14px 32px rgba(125,29,63,.12);
+  }
+  .poke-art-big .poke-art{padding:14px;}
+  .poke-art-big .poke-fallback{font-size:110px;}
+  .poke-info-big{flex:1 1 280px;gap:12px;}
+  .poke-info-big .poke-title-row b{font-size:29px;line-height:1.15;}
+  .poke-info-big .lvl-badge{font-size:15px;padding:5px 13px;}
+  .xp-bar-big{height:22px;box-shadow:inset 0 1px 3px rgba(125,29,63,.10);}
+  .poke-info-big .xp-text{font-size:15px;}
+  .evo-card{
+    display:flex;flex-direction:column;gap:8px;
+    background:#FFFAF0;border:2px dashed #FFE1A3;border-radius:16px;padding:10px 12px;
+  }
+  .evo-card[hidden]{display:none;}
+  .evo-line{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .evo-step{
+    display:inline-flex;align-items:center;gap:5px;
+    padding:4px 10px;border-radius:999px;border:2px solid #F0DFC6;
+    background:#fff;color:#8A6E77;font-size:12.5px;font-weight:900;white-space:nowrap;
+  }
+  .evo-step.now{background:linear-gradient(180deg,#9E2A50,#7D1D3F);border-color:#5E1430;color:#fff;}
+  .evo-step.next{background:#FFF4D6;border-color:#FFD868;color:#8A6200;}
+  .evo-arrow{color:#C9A9B5;font-size:13px;font-weight:900;}
+  .evo-next{font-size:13px;font-weight:800;color:#8A6200;line-height:1.45;}
+  .egg-big{padding:15px 17px;}
+  .egg-big .egg-emoji{font-size:44px;}
+  .egg-big .egg-body b{font-size:17px;}
+  .egg-big .egg-body span{font-size:14px;}
+  .egg-big .btn{flex:0 0 auto;}
+  .score-actions{display:flex;gap:8px;flex-wrap:wrap;}
+
+  /* 도감 — 포켓몬 탭 안에서 바로 */
+  .dex-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+  .dex-head h2{font-size:19.5px;font-weight:900;}
+  .dex-count{
+    font-size:13.5px;font-weight:900;padding:4px 11px;border-radius:999px;
+    background:var(--purple-soft);color:#7D1D3F;
+  }
+  .dex-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .dex-filters{display:flex;gap:6px;background:#F9F0F3;padding:5px;border-radius:15px;flex:0 0 auto;}
+  .dex-filter{
+    height:40px;padding:0 13px;border:0;border-radius:11px;background:transparent;
+    font-family:inherit;font-size:14px;font-weight:900;color:#6E4A55;cursor:pointer;white-space:nowrap;
+  }
+  .dex-filter.active{background:#fff;color:#7D1D3F;box-shadow:0 3px 10px rgba(125,29,63,.14);}
+  .dex-filter b{font-weight:900;}
+  .dex-list.dex-all{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px;
+    max-height:540px;overflow:auto;margin-top:2px;padding-right:2px;
+  }
+  .dex-list.dex-all li{
+    flex-direction:column;gap:1px;padding:8px 4px 9px;border-radius:14px;text-align:center;
+    background:#FCF6F8;font-size:12px;
+  }
+  .dex-list.dex-all li.locked{background:#FAF4F6;color:#BBA5AE;cursor:default;}
+  .dex-list.dex-all li.have{background:#FCF0F4;}
+  .dex-list.dex-all li.current{box-shadow:inset 0 0 0 2px #D89FB4;}
+  .dex-list.dex-all li img{width:44px;height:44px;}
+  .dex-list.dex-all .dex-name{font-size:11.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+  .dex-no{font-size:11.5px;font-weight:900;color:#BBA5AE;height:44px;line-height:44px;}
+  .dex-lv-mini{font-size:10.5px;font-weight:900;color:#8C5568;}
+
   /* ---------- 한마디 ---------- */
   .nicks{display:flex;gap:7px;flex-wrap:wrap;}
   .nick{
@@ -683,21 +825,36 @@
 </head>
 <body>
 
-<header class="top">
-  <div>
-    <div class="brand">🏡 로건이네 가족 대시보드</div>
-    <div class="date-line"><span id="dateText">오늘</span> · <span id="clock">--:--</span></div>
-  </div>
-  <div class="pills">
-    <span class="pill">📖 도감 <b id="hDex">0/151</b></span>
-    <span class="pill">⭐ <b id="hLevel">Lv.1</b></span>
-    <span class="pill">✅ 퀘스트 <b id="hQuest">0/0</b></span>
-    <span class="pill sync off" id="syncPill" role="status">⚪ 오프라인</span>
-    <button class="pill" id="codeBtn" type="button" title="가족 코드 바꾸기">🔒 코드</button>
-  </div>
-</header>
+<div class="top-wrap">
+  <header class="top">
+    <div>
+      <div class="brand">🏡 로건이네 가족 대시보드</div>
+      <div class="date-line"><span id="dateText">오늘</span> · <span id="clock">--:--</span></div>
+    </div>
+    <div class="pills">
+      <span class="pill">📖 도감 <b id="hDex">0/151</b></span>
+      <span class="pill">⭐ <b id="hLevel">Lv.1</b></span>
+      <span class="pill">✅ 퀘스트 <b id="hQuest">0/0</b></span>
+      <span class="pill sync off" id="syncPill" role="status">⚪ 오프라인</span>
+      <button class="pill" id="codeBtn" type="button" title="가족 코드 바꾸기">🔒 코드</button>
+    </div>
+  </header>
+
+  <!-- 화면 탭: 🏡 가족 홈 / ⚡ 포켓몬 -->
+  <nav class="tabbar" role="tablist" aria-label="대시보드 화면">
+    <button class="tab-btn active" id="tabHome" type="button" role="tab" aria-selected="true" aria-controls="panelHome">
+      <span class="tab-ico" aria-hidden="true">🏡</span><span class="tab-label">가족 홈</span>
+    </button>
+    <button class="tab-btn" id="tabPoke" type="button" role="tab" aria-selected="false" aria-controls="panelPoke">
+      <span class="tab-ico" aria-hidden="true">⚡</span><span class="tab-label">포켓몬</span>
+      <span class="tab-badge" id="pokeTabBadge">Lv.1</span>
+    </button>
+  </nav>
+</div>
 
 <main>
+  <!-- ============ 탭 1 · 🏡 가족 홈 ============ -->
+  <section class="panel" id="panelHome" role="tabpanel" aria-labelledby="tabHome">
   <div class="grid">
 
     <!-- ============ 1단 (왼쪽) ============ -->
@@ -762,7 +919,7 @@
     <!-- ============ 2단 (가운데 메인) ============ -->
     <div class="col col-main">
 
-      <!-- 오늘의 퀘스트 (가족 달력 다음, 포켓몬 키우기 위) -->
+      <!-- 오늘의 퀘스트 (가족 달력 다음 · 포켓몬은 ⚡ 포켓몬 탭) -->
       <section class="card card-quest" style="--tint:#FBE8EE">
         <div class="quest-head">
           <h2>⭐ 오늘의 퀘스트 <span class="day-chip" id="questDay">오늘</span></h2>
@@ -809,56 +966,13 @@
         </div>
         <div class="day-hint" id="questDaysHint">오늘 요일 루틴에 넣어요</div>
 
-        <div class="egg-box" id="eggBox">
-          <span class="egg-emoji" id="eggEmoji">🥚</span>
-          <div class="egg-body">
-            <b>올클리어 알</b>
-            <span id="eggText">오늘 퀘스트를 모두 끝내면 알이 부화해요!</span>
-          </div>
-        </div>
-
         <div class="score-row">
           <span class="hint" id="questHint">다 체크하면 알이 부화해요 🥚</span>
-          <button class="btn btn-ghost small" id="resetQuestsBtn" type="button">하루 초기화</button>
-        </div>
-      </section>
-
-      <section class="card card-main" style="--tint:#FFF3D2">
-        <div class="card-head">
-          <h2>⚡ 로건이 포켓몬 키우기</h2>
-          <span class="hint" id="pokeHint">👶🏻 로건 · 8세 · 초1 · 퀘스트를 체크하면 포켓몬이 자라요</span>
-        </div>
-
-        <div class="poke-hero">
-          <div class="poke-art-wrap" id="partnerBox"></div>
-          <div class="poke-info">
-            <div class="poke-title-row">
-              <b id="partnerName">파트너를 골라 주세요</b>
-              <span class="lvl-badge" id="lvlBadge">Lv.1</span>
-              <span class="dex-badge" id="dexBadge">📖 도감 0/151</span>
-            </div>
-            <div class="xp-row">
-              <div class="xp-bar"><i id="xpFill"></i></div>
-              <span class="xp-text" id="xpText">0/80 XP</span>
-            </div>
-            <div class="poke-meta">
-              <span class="pt-badge">⭐ 누적 <b id="pointText">0</b>P</span>
-              <span class="hint" id="evolveHint">파트너를 고르면 진화 정보가 보여요</span>
-              <button class="btn btn-purple small" id="pickPartnerBtn" type="button">파트너 고르기</button>
-            </div>
+          <div class="score-actions">
+            <button class="btn btn-ghost small" id="goPokeBtn" type="button">⚡ 포켓몬 보기</button>
+            <button class="btn btn-ghost small" id="resetQuestsBtn" type="button">하루 초기화</button>
           </div>
         </div>
-
-        <div class="picker" id="partnerPicker" hidden>
-          <div class="picker-head">누구랑 함께할까? <span class="hint">스타팅 5종 + 도감에 잡은 포켓몬 전부</span></div>
-          <div class="poke-choices" id="pokeChoices"></div>
-        </div>
-
-        <details class="more">
-          <summary id="dexSummary">📖 도감 보기 (0/151)</summary>
-          <div class="dex-tip">잡은 포켓몬을 누르면 그 아이가 바로 파트너가 돼요 · 종마다 레벨·경험치가 따로 쌓여요</div>
-          <ul class="dex-list" id="dexList"></ul>
-        </details>
       </section>
 
     </div>
@@ -910,11 +1024,84 @@
     </div>
 
   </div>
+  </section>
+
+  <!-- ============ 탭 2 · ⚡ 포켓몬 ============ -->
+  <section class="panel" id="panelPoke" role="tabpanel" aria-labelledby="tabPoke" hidden>
+  <div class="poke-tab-grid">
+
+    <!-- 파트너 포켓몬 (탭 메인 · 크게) -->
+    <section class="card card-main poke-hero-card" style="--tint:#FFF3D2">
+      <div class="card-head">
+        <h2>⚡ 로건이 포켓몬 키우기</h2>
+        <span class="hint" id="pokeHint">👶🏻 로건 · 8세 · 초1 · 퀘스트를 체크하면 포켓몬이 자라요</span>
+      </div>
+
+      <div class="poke-today" id="pokeToday">🏡 가족 홈 탭에서 오늘의 퀘스트를 체크하면 여기 경험치가 쌓여요</div>
+
+      <div class="poke-stage">
+        <div class="poke-art-wrap poke-art-big" id="partnerBox"></div>
+        <div class="poke-info poke-info-big">
+          <div class="poke-title-row">
+            <b id="partnerName">파트너를 골라 주세요</b>
+            <span class="lvl-badge" id="lvlBadge">Lv.1</span>
+            <span class="dex-badge" id="dexBadge">📖 도감 0/151</span>
+          </div>
+          <div class="xp-row">
+            <div class="xp-bar xp-bar-big"><i id="xpFill"></i></div>
+            <span class="xp-text" id="xpText">0/80 XP</span>
+          </div>
+          <div class="evo-card" id="evoCard">
+            <div class="evo-line" id="evoLine"></div>
+            <div class="evo-next" id="evoNext">파트너를 고르면 진화 정보가 보여요</div>
+          </div>
+          <div class="poke-meta">
+            <span class="pt-badge">⭐ 누적 <b id="pointText">0</b>P</span>
+            <span class="hint" id="evolveHint">파트너를 고르면 진화 정보가 보여요</span>
+            <button class="btn btn-purple small" id="pickPartnerBtn" type="button">파트너 고르기</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="picker" id="partnerPicker" hidden>
+        <div class="picker-head">누구랑 함께할까? <span class="hint">스타팅 5종 + 도감에 잡은 포켓몬 전부</span></div>
+        <div class="poke-choices" id="pokeChoices"></div>
+      </div>
+
+      <div class="egg-box egg-big" id="eggBox">
+        <span class="egg-emoji" id="eggEmoji">🥚</span>
+        <div class="egg-body">
+          <b>올클리어 알</b>
+          <span id="eggText">오늘 퀘스트를 모두 끝내면 알이 부화해요!</span>
+        </div>
+        <button class="btn btn-ghost small" id="goHomeBtn" type="button">🏡 퀘스트 하러 가기</button>
+      </div>
+    </section>
+
+    <!-- 도감 (탭 안에서 바로 · 보유 / 전체 151) -->
+    <section class="card poke-dex-card" style="--tint:#F7DCE4">
+      <div class="dex-head">
+        <h2>📖 도감</h2>
+        <span class="dex-count" id="dexCountLabel">0/151</span>
+      </div>
+      <div class="dex-tools">
+        <div class="dex-filters" id="dexFilters" role="group" aria-label="도감 보기">
+          <button class="dex-filter active" type="button" data-dex="owned" aria-pressed="true">보유 <b id="dexOwnedN">0</b></button>
+          <button class="dex-filter" type="button" data-dex="all" aria-pressed="false">전체 151</button>
+        </div>
+        <span class="dex-tip">잡은 포켓몬을 누르면 그 아이가 바로 파트너가 돼요 · 종마다 레벨·경험치가 따로 쌓여요</span>
+      </div>
+      <ul class="dex-list" id="dexList"></ul>
+    </section>
+
+  </div>
+  </section>
 
   <footer class="guide">
     <details>
       <summary>💡 이렇게 쓰면 편해요</summary>
       <ul>
+        <li>화면 위 <b>🏡 가족 홈</b>·<b>⚡ 포켓몬</b> 탭으로 화면을 바꿔요. 홈에는 달력·오늘의 퀘스트·해주세요 리스트·한마디가, 포켓몬 탭에는 크게 키우는 파트너와 <b>📖 도감</b>이 있어요. 퀘스트를 체크하면 포켓몬 탭 뱃지와 경험치가 바로 바뀌어요.</li>
         <li>아이폰·아이패드 <b>사파리</b>에서 열고 <b>공유 → 홈 화면에 추가</b>를 누르면 앱처럼 전체 화면으로 열려요.</li>
         <li><b>⚡ 포켓몬 키우기</b>는 <b>파트너 변경</b>이나 <b>도감</b>에서 잡은 포켓몬을 눌러 파트너를 바꿀 수 있어요. <b>오늘의 퀘스트</b>를 체크할 때마다 그 파트너에게 경험치가 쌓이고, 경험치가 차면 레벨업해요. 진화는 실제 도감 순서대로 <b>1차 Lv.5 · 2차 Lv.10</b>이고, 종마다 레벨이 따로 남아서 바꿔 가며 키울 수 있어요.</li>
         <li><b>🗓 요일 탭</b>은 <b>오늘의 퀘스트</b> 제목 바로 아래 <b>월~일</b> 탭이에요. 다른 요일을 누르면 그 요일 퀘스트를 미리 볼 수 있고, 아래 입력창으로 그 요일 루틴에 바로 넣거나 <b>✕</b>로 뺄 수 있어요. 체크와 경험치는 <b>오늘 탭</b>에서만 되고, 다른 요일을 보는 동안에는 자물쇠로 잠겨 있어요. <b>매일</b>을 고르면 일주일 모두에 들어가요. 뺐던 기본 항목은 <b>기본 복원</b>으로 다시 채웁니다.</li>
@@ -2345,9 +2532,12 @@
       el('#questCount').textContent = st.done + '/' + st.total + ' 완료';
       el('#questPct').textContent = st.pct + '%';
       el('#questFill').style.width = st.pct + '%';
+      /* 알을 부화한 날은 홈에서도 포켓몬 탭으로 안내한다 */
+      var hatchedToday = !!(state.pokemon && state.pokemon.eggDate === todayKey());
       el('#questHint').textContent = !st.total
         ? '퀘스트를 추가해 보세요'
-        : (st.done === st.total ? '오늘 퀘스트 올클리어! 🎉' : '다 체크하면 알이 부화해요 🥚');
+        : (hatchedToday ? '오늘 알이 부화했어요 🐣 · ⚡ 포켓몬 탭에서 확인!'
+          : (st.done === st.total ? '오늘 퀘스트 올클리어! 🎉' : '다 체크하면 알이 부화해요 🥚'));
     } else {
       el('#questCount').textContent = items.length + '개 루틴';
       el('#questPct').textContent = '예정';
@@ -2786,6 +2976,113 @@
     return 'Lv.' + need + '에 ' + POKE_INFO[opts[0]].name + '(으)로 진화!';
   }
 
+  /* ---------- 진화 단계 (다음 진화까지 남은 레벨·경험치) ---------- */
+  function xpToNextEvo(id) {
+    var need = nextEvoLevel(id);
+    if (!need) return null;
+    var rec = monRec(id);
+    if (rec.level >= need) return { need: need, left: 0, levels: 0 };
+    var left = Math.max(0, xpGoal(rec.level) - rec.xp);
+    for (var l = rec.level + 1; l < need; l++) left += xpGoal(l);
+    return { need: need, left: left, levels: need - rec.level };
+  }
+
+  /* 이브이는 세 갈래로 갈라지니 진화 줄에 세 모습을 함께 보여 준다 */
+  function evoChainOf(poke) {
+    if (!poke) return [];
+    var out = [], i;
+    if (poke.id === EEVEE_ID) {
+      out.push(EEVEE_ID);
+      for (i = 0; i < EEVEE_FORMS.length; i++) out.push(EEVEE_FORMS[i]);
+      return out;
+    }
+    return poke.line.slice();
+  }
+
+  function renderEvoLine() {
+    var poke = currentPoke();
+    var line = el('#evoLine');
+    var next = el('#evoNext');
+    if (!line) return;
+    line.innerHTML = '';
+    if (!poke) {
+      if (next) next.textContent = '파트너를 고르면 진화 정보가 보여요';
+      return;
+    }
+    var chain = evoChainOf(poke);
+    var nexts = nextIds(poke.id);
+    for (var i = 0; i < chain.length; i++) {
+      var cid = chain[i];
+      var info = POKE_INFO[cid];
+      if (!info) continue;
+      if (i) {
+        var arrow = document.createElement('span');
+        arrow.className = 'evo-arrow';
+        arrow.textContent = '→';
+        line.appendChild(arrow);
+      }
+      var step = document.createElement('span');
+      var cls = 'evo-step';
+      if (cid === poke.id) cls += ' now';
+      else if (nexts.indexOf(cid) >= 0) cls += ' next';
+      step.className = cls;
+      if (cid === poke.id) {
+        step.textContent = '지금 · ' + info.name;
+      } else {
+        step.textContent = 'Lv.' + (info.stage === 0 ? 1 : evoLevelFor(info.stage - 1)) + ' ' + info.name;
+      }
+      line.appendChild(step);
+    }
+    if (!next) return;
+    var to = xpToNextEvo(poke.id);
+    if (!to) {
+      next.textContent = poke.line.length > 1 ? '최종 진화 완료! 🏆' : '진화 없는 포켓몬이에요 (최고 단계)';
+    } else if (!to.levels) {
+      next.textContent = 'Lv.' + to.need + ' 진화 조건을 채웠어요';
+    } else {
+      next.textContent = '다음 진화까지 ' + to.levels + '레벨 · ' + to.left + ' XP 남았어요';
+    }
+  }
+
+  /* 홈 탭에서 오늘 퀘스트를 채우면 포켓몬 탭 위쪽에 바로 보이는 안내 */
+  function renderPokeToday() {
+    var box = el('#pokeToday');
+    if (!box) return;
+    var p = state.pokemon || {};
+    var st = questStats(questItems());
+    var hatched = p.eggDate === todayKey();
+    var cls = 'poke-today';
+    var text;
+    if (hatched) {
+      var info = POKE_INFO[p.eggPoke];
+      cls += ' done';
+      text = '🐣 오늘 올클리어 알 부화 완료' + (info ? ' · ' + info.emoji + ' ' + info.name + ' 도감 등록' : '') + ' · +50XP';
+    } else if (!st.total) {
+      text = '🏡 가족 홈 탭에서 오늘의 퀘스트를 추가해 보세요';
+    } else if (st.done === st.total) {
+      cls += ' ready';
+      text = '🥚 오늘 퀘스트 올클리어! 알이 부화했어요';
+    } else {
+      text = '🏡 가족 홈 탭에서 오늘의 퀘스트 ' + st.done + '/' + st.total + ' 완료 · 다 체크하면 알이 부화해요';
+    }
+    box.className = cls;
+    box.textContent = text;
+  }
+
+  /* 탭 뱃지: 파트너 레벨, 오늘 알을 부화했으면 🥚로 빛난다 */
+  function renderTabBadge() {
+    var badge = el('#pokeTabBadge');
+    if (!badge) return;
+    var poke = currentPoke();
+    var hatched = !!(state.pokemon && state.pokemon.eggDate === todayKey());
+    var lvl = poke ? levelOf(poke.id) : 1;
+    badge.textContent = hatched ? '🥚' : ('Lv.' + lvl);
+    badge.classList.toggle('hot', hatched);
+    badge.setAttribute('title', hatched
+      ? '오늘 올클리어 알을 부화했어요'
+      : (poke ? poke.name + ' Lv.' + lvl : '파트너를 골라 주세요'));
+  }
+
   function renderPokemon() {
     var p = state.pokemon;
     var poke = currentPoke();
@@ -2793,6 +3090,9 @@
     var goal = xpGoal(rec.level);
 
     renderPartnerBox();
+    renderEvoLine();
+    renderPokeToday();
+    renderTabBadge();
 
     el('#partnerName').textContent = poke ? poke.name : '파트너를 골라 주세요';
     el('#lvlBadge').textContent = 'Lv.' + rec.level;
@@ -2853,56 +3153,123 @@
     if (info) toast(info.emoji + ' ' + withParticle(info.name) + ' 함께! (Lv.' + levelOf(info.id) + ')');
   }
 
+  /* 도감 보기: 보유(기본) / 전체 151 — 둘 다 포켓몬 탭 안에서 바로 */
+  var dexView = 'owned';
+
+  function renderDexFilters() {
+    elAll('.dex-filter').forEach(function (b) {
+      var on = b.getAttribute('data-dex') === dexView;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    var n = el('#dexOwnedN');
+    if (n) n.textContent = String(dexCount());
+  }
+
   function renderDex() {
     var ul = el('#dexList');
     ul.innerHTML = '';
-    el('#dexSummary').textContent = '📖 도감 보기 (' + dexCount() + '/' + TOTAL_DEX + ')';
+    ul.className = 'dex-list' + (dexView === 'all' ? ' dex-all' : '');
+    var label = el('#dexCountLabel');
+    if (label) label.textContent = dexCount() + '/' + TOTAL_DEX;
+    renderDexFilters();
+
     var dex = (state.pokemon.dex || []).slice().sort(function (a, b) { return a - b; });
-    if (!dex.length) {
-      var empty = document.createElement('li');
-      empty.className = 'empty-dex';
-      empty.textContent = '아직 도감이 비었어요. 퀘스트를 완료해 포켓몬을 만나 보세요!';
-      ul.appendChild(empty);
+    var i, id;
+
+    if (dexView === 'owned') {
+      if (!dex.length) {
+        var empty = document.createElement('li');
+        empty.className = 'empty-dex';
+        empty.textContent = '아직 도감이 비었어요. 퀘스트를 완료해 포켓몬을 만나 보세요!';
+        ul.appendChild(empty);
+        return;
+      }
+      for (i = 0; i < dex.length; i++) {
+        (function (id) {
+          var info = POKE_INFO[id];
+          if (!info) return;
+          var now = curId() === id;
+          var li = document.createElement('li');
+          li.className = 'dex-row' + (now ? ' current' : '');
+          li.setAttribute('data-id', String(id));
+          li.appendChild(makeArtImg(id, info.name, 'dex-art', 26));
+          var span = document.createElement('span');
+          span.className = 'dex-name';
+          span.textContent = info.emoji + ' ' + info.name;
+          li.appendChild(span);
+          var lv = document.createElement('span');
+          lv.className = 'dex-lv';
+          lv.textContent = 'Lv.' + levelOf(id);
+          li.appendChild(lv);
+          if (now) {
+            var badge = document.createElement('span');
+            badge.className = 'dex-now';
+            badge.textContent = '파트너';
+            li.appendChild(badge);
+          } else {
+            var pick = document.createElement('button');
+            pick.type = 'button';
+            pick.className = 'dex-pick';
+            pick.setAttribute('data-pick', String(id));
+            pick.textContent = '파트너로';
+            pick.addEventListener('click', function (ev) {
+              if (ev && ev.stopPropagation) ev.stopPropagation();
+              choosePartner(id);
+            });
+            li.appendChild(pick);
+          }
+          li.addEventListener('click', function () { choosePartner(id); });
+          ul.appendChild(li);
+        })(dex[i]);
+      }
       return;
     }
-    for (var i = 0; i < dex.length; i++) {
+
+    /* 전체 151 — 잡은 아이는 누르면 파트너, 아직 못 만난 아이는 잠금 표시 */
+    for (id = 1; id <= TOTAL_DEX; id++) {
       (function (id) {
         var info = POKE_INFO[id];
         if (!info) return;
+        var have = dex.indexOf(id) >= 0;
         var now = curId() === id;
         var li = document.createElement('li');
-        li.className = 'dex-row' + (now ? ' current' : '');
+        li.className = 'dex-cell' + (have ? ' have' : ' locked') + (now ? ' current' : '');
         li.setAttribute('data-id', String(id));
-        li.appendChild(makeArtImg(id, info.name, 'dex-art', 26));
-        var span = document.createElement('span');
-        span.className = 'dex-name';
-        span.textContent = info.emoji + ' ' + info.name;
-        li.appendChild(span);
-        var lv = document.createElement('span');
-        lv.className = 'dex-lv';
-        lv.textContent = 'Lv.' + levelOf(id);
-        li.appendChild(lv);
-        if (now) {
-          var badge = document.createElement('span');
-          badge.className = 'dex-now';
-          badge.textContent = '파트너';
-          li.appendChild(badge);
+        if (have) {
+          li.appendChild(makeArtImg(id, info.name, 'dex-art', 44));
+          var nm = document.createElement('span');
+          nm.className = 'dex-name';
+          nm.textContent = info.name;
+          li.appendChild(nm);
+          var lv = document.createElement('span');
+          lv.className = 'dex-lv-mini';
+          lv.textContent = now ? '파트너' : ('Lv.' + levelOf(id));
+          li.appendChild(lv);
+          li.addEventListener('click', function () { choosePartner(id); });
         } else {
-          var pick = document.createElement('button');
-          pick.type = 'button';
-          pick.className = 'dex-pick';
-          pick.setAttribute('data-pick', String(id));
-          pick.textContent = '파트너로';
-          pick.addEventListener('click', function (ev) {
-            if (ev && ev.stopPropagation) ev.stopPropagation();
-            choosePartner(id);
+          var no = document.createElement('span');
+          no.className = 'dex-no';
+          no.textContent = '#' + id;
+          li.appendChild(no);
+          var nm2 = document.createElement('span');
+          nm2.className = 'dex-name';
+          nm2.textContent = '???';
+          li.appendChild(nm2);
+          li.addEventListener('click', function () {
+            toast('아직 만나지 못한 포켓몬이에요 · 퀘스트를 완료해 만나 보세요!');
           });
-          li.appendChild(pick);
         }
-        li.addEventListener('click', function () { choosePartner(id); });
         ul.appendChild(li);
-      })(dex[i]);
+      })(id);
     }
+  }
+
+  function setDexView(v) {
+    var next = v === 'all' ? 'all' : 'owned';
+    if (next === dexView) return;
+    dexView = next;
+    renderDex();
   }
 
   function renderEgg() {
@@ -3693,8 +4060,36 @@
   }
 
   /* =========================================================
-     헤더 / 날짜 넘어감
+     헤더 / 화면 탭 / 날짜 넘어감
      ========================================================= */
+  /* 탭은 이 화면을 보는 동안만 기억한다 (저장 스키마는 그대로) */
+  var activeTab = 'home';
+
+  function applyTab() {
+    var isPoke = activeTab === 'poke';
+    var home = el('#panelHome'), poke = el('#panelPoke');
+    if (home) home.hidden = isPoke;
+    if (poke) poke.hidden = !isPoke;
+    var th = el('#tabHome'), tp = el('#tabPoke');
+    if (th) {
+      th.classList.toggle('active', !isPoke);
+      th.setAttribute('aria-selected', isPoke ? 'false' : 'true');
+    }
+    if (tp) {
+      tp.classList.toggle('active', isPoke);
+      tp.setAttribute('aria-selected', isPoke ? 'true' : 'false');
+    }
+  }
+
+  function setTab(name) {
+    activeTab = name === 'poke' ? 'poke' : 'home';
+    applyTab();
+    if (typeof window !== 'undefined' && window.scrollTo) {
+      try { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+      catch (e) { try { window.scrollTo(0, 0); } catch (e2) {} }
+    }
+  }
+
   function renderHeader() {
     el('#dateText').textContent = dateLabel();
     el('#clock').textContent = clockLabel();
@@ -3726,6 +4121,7 @@
   }
 
   function renderAll() {
+    applyTab();
     renderPokemon();
     renderQuests();
     renderDayPicker();
@@ -3770,6 +4166,20 @@
      이벤트 연결
      ========================================================= */
   function bindEvents() {
+    /* 화면 탭 — 🏡 가족 홈 / ⚡ 포켓몬 */
+    var tabHome = el('#tabHome');
+    if (tabHome) tabHome.addEventListener('click', function () { setTab('home'); });
+    var tabPoke = el('#tabPoke');
+    if (tabPoke) tabPoke.addEventListener('click', function () { setTab('poke'); });
+    var goPoke = el('#goPokeBtn');
+    if (goPoke) goPoke.addEventListener('click', function () { setTab('poke'); });
+    var goHome = el('#goHomeBtn');
+    if (goHome) goHome.addEventListener('click', function () { setTab('home'); });
+    /* 도감 보기: 보유 / 전체 151 */
+    elAll('.dex-filter').forEach(function (b) {
+      b.addEventListener('click', function () { setDexView(b.getAttribute('data-dex')); });
+    });
+
     el('#pickPartnerBtn').addEventListener('click', function () {
       pickerOpen = !pickerOpen;
       el('#partnerPicker').hidden = !pickerOpen;
