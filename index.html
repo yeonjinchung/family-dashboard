@@ -582,12 +582,33 @@
   }
   .score-actions{display:flex;gap:8px;flex-wrap:wrap;}
 
-  /* 도감 — 포켓몬 탭 안에서 바로 */
-  .dex-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+  /* 도감 — 포켓몬 탭 안에서 바로 (헤더를 눌러 접었다 펼 수 있어요) */
+  .dex-head{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    cursor:pointer;user-select:none;-webkit-user-select:none;
+  }
   .dex-head h2{font-size:19.5px;font-weight:900;}
   .dex-count{
     font-size:13.5px;font-weight:900;padding:4px 11px;border-radius:999px;
     background:var(--purple-soft);color:#7D1D3F;
+  }
+  .dex-toggle{
+    margin-left:auto;display:inline-flex;align-items:center;gap:6px;
+    min-height:40px;padding:0 15px;border:2px solid #EBD2DB;border-radius:999px;
+    background:#fff;color:#7D1D3F;font-family:inherit;font-size:13.5px;font-weight:900;
+    cursor:pointer;white-space:nowrap;
+  }
+  .dex-toggle:hover{background:#FDF3F6;}
+  .dex-toggle:active{transform:translateY(1px);}
+  .dex-toggle[aria-expanded="true"]{
+    background:linear-gradient(180deg,#9E2A50,#7D1D3F);border-color:#5E1430;color:#fff;
+  }
+  .dex-caret{font-size:12px;line-height:1;}
+  .dex-body{margin-top:2px;}
+  .poke-dex-card:not(.open) .dex-body{margin-top:0;}
+  @media (max-width:560px){
+    .dex-head{gap:8px;}
+    .dex-toggle{padding:0 13px;font-size:13px;}
   }
   .dex-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   .dex-filters{display:flex;gap:6px;background:#F9F0F3;padding:5px;border-radius:15px;flex:0 0 auto;}
@@ -1074,20 +1095,25 @@
       </div>
     </section>
 
-    <!-- 도감 (탭 안에서 바로 · 보유 / 전체 151) -->
-    <section class="card poke-dex-card" style="--tint:#F7DCE4">
-      <div class="dex-head">
+    <!-- 도감 (탭 안에서 바로 · 보유 / 전체 151 · 헤더를 눌러 접기/펼치기) -->
+    <section class="card poke-dex-card" id="dexCard" style="--tint:#F7DCE4">
+      <div class="dex-head" id="dexHead">
         <h2>📖 도감</h2>
         <span class="dex-count" id="dexCountLabel">0/151</span>
+        <button class="dex-toggle" id="dexToggle" type="button" aria-expanded="false" aria-controls="dexBody">
+          <span id="dexToggleText">도감 펼치기</span><span class="dex-caret" id="dexCaret" aria-hidden="true">▾</span>
+        </button>
       </div>
-      <div class="dex-tools">
-        <div class="dex-filters" id="dexFilters" role="group" aria-label="도감 보기">
-          <button class="dex-filter active" type="button" data-dex="owned" aria-pressed="true">보유 <b id="dexOwnedN">0</b></button>
-          <button class="dex-filter" type="button" data-dex="all" aria-pressed="false">전체 151</button>
+      <div class="dex-body" id="dexBody" hidden>
+        <div class="dex-tools">
+          <div class="dex-filters" id="dexFilters" role="group" aria-label="도감 보기">
+            <button class="dex-filter active" type="button" data-dex="owned" aria-pressed="true">보유 <b id="dexOwnedN">0</b></button>
+            <button class="dex-filter" type="button" data-dex="all" aria-pressed="false">전체 151</button>
+          </div>
+          <span class="dex-tip">잡은 포켓몬을 누르면 그 아이가 바로 파트너가 돼요 · 종마다 레벨·경험치가 따로 쌓여요</span>
         </div>
-        <span class="dex-tip">잡은 포켓몬을 누르면 그 아이가 바로 파트너가 돼요 · 종마다 레벨·경험치가 따로 쌓여요</span>
+        <ul class="dex-list" id="dexList"></ul>
       </div>
-      <ul class="dex-list" id="dexList"></ul>
     </section>
 
   </div>
@@ -1097,7 +1123,7 @@
     <details>
       <summary>💡 이렇게 쓰면 편해요</summary>
       <ul>
-        <li>화면 위 <b>🏡 가족 홈</b>·<b>⚡ 포켓몬</b> 탭으로 화면을 바꿔요. 홈에는 달력·오늘의 퀘스트·해주세요 리스트·한마디가, 포켓몬 탭에는 크게 키우는 파트너와 <b>📖 도감</b>이 있어요. 퀘스트를 체크하면 포켓몬 탭 뱃지와 경험치가 바로 바뀌어요.</li>
+        <li>화면 위 <b>🏡 가족 홈</b>·<b>⚡ 포켓몬</b> 탭으로 화면을 바꿔요. 홈에는 달력·오늘의 퀘스트·해주세요 리스트·한마디가, 포켓몬 탭에는 크게 키우는 파트너와 <b>📖 도감</b>이 있어요. <b>📖 도감</b>은 처음엔 접혀 있고, <b>도감 펼치기 ▾</b>를 누르면 보유한 포켇몬과 전체 151마리가 펼쳐져요. 다시 누르면 접혀요. 퀘스트를 체크하면 포켓몬 탭 뱃지와 경험치가 바로 바뀌어요.</li>
         <li>아이폰·아이패드 <b>사파리</b>에서 열고 <b>공유 → 홈 화면에 추가</b>를 누르면 앱처럼 전체 화면으로 열려요.</li>
         <li><b>⚡ 포켓몬 키우기</b>는 <b>파트너 변경</b>이나 <b>도감</b>에서 잡은 포켓몬을 눌러 파트너를 바꿀 수 있어요. <b>오늘의 퀘스트</b>를 체크할 때마다 그 파트너에게 경험치가 쌓이고, 경험치가 차면 레벨업해요. 진화는 실제 도감 순서대로 <b>1차 Lv.5 · 2차 Lv.10</b>이고, 종마다 레벨이 따로 남아서 바꿔 가며 키울 수 있어요.</li>
         <li><b>🗓 요일 탭</b>은 <b>오늘의 퀘스트</b> 제목 바로 아래 <b>월~일</b> 탭이에요. 다른 요일을 누르면 그 요일 퀘스트를 미리 볼 수 있고, 아래 입력창으로 그 요일 루틴에 바로 넣거나 <b>✕</b>로 뺄 수 있어요. 체크와 경험치는 <b>오늘 탭</b>에서만 되고, 다른 요일을 보는 동안에는 자물쇠로 잠겨 있어요. <b>매일</b>을 고르면 일주일 모두에 들어가요. 뺐던 기본 항목은 <b>기본 복원</b>으로 다시 채웁니다.</li>
@@ -3089,6 +3115,7 @@
     renderEvoLine();
     renderPokeToday();
     renderTabBadge();
+    applyDexOpen();
 
     el('#partnerName').textContent = poke ? poke.name : '파트너를 골라 주세요';
     el('#lvlBadge').textContent = 'Lv.' + rec.level;
@@ -3151,6 +3178,34 @@
 
   /* 도감 보기: 보유(기본) / 전체 151 — 둘 다 포켓몬 탭 안에서 바로 */
   var dexView = 'owned';
+
+  /* 도감 접기/펼치기 — 기본은 접힌 상태(파트너·올클리어 알이 먼저 보이게).
+     이 화면을 보는 동안만 기억하고 저장 스키마에는 넣지 않는다. */
+  var dexOpen = false;
+
+  function applyDexOpen() {
+    var body = el('#dexBody');
+    if (body) body.hidden = !dexOpen;
+    var card = el('#dexCard');
+    if (card) card.classList.toggle('open', dexOpen);
+    var btn = el('#dexToggle');
+    if (btn) {
+      btn.setAttribute('aria-expanded', dexOpen ? 'true' : 'false');
+      btn.setAttribute('aria-label', dexOpen ? '도감 접기' : '도감 펼치기');
+      btn.title = dexOpen ? '도감 접기' : '도감 펼치기';
+    }
+    var txt = el('#dexToggleText');
+    if (txt) txt.textContent = dexOpen ? '도감 접기' : '도감 펼치기';
+    var caret = el('#dexCaret');
+    if (caret) caret.textContent = dexOpen ? '▴' : '▾';
+  }
+
+  function toggleDex(open) {
+    dexOpen = (typeof open === 'boolean') ? open : !dexOpen;
+    applyDexOpen();
+    /* 펼쳤을 때 목록이 아직 안 그려져 있으면 그린다 */
+    if (dexOpen) renderDex();
+  }
 
   function renderDexFilters() {
     elAll('.dex-filter').forEach(function (b) {
@@ -4178,6 +4233,18 @@
     if (goPoke) goPoke.addEventListener('click', function () { setTab('poke'); });
     var goHome = el('#goHomeBtn');
     if (goHome) goHome.addEventListener('click', function () { setTab('home'); });
+    /* 도감 접기/펼치기 — 헤더를 눌러도, 토글 버튼을 눌러도 된다 */
+    var dexToggleBtn = el('#dexToggle');
+    if (dexToggleBtn) dexToggleBtn.addEventListener('click', function (ev) {
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+      toggleDex();
+    });
+    var dexHead = el('#dexHead');
+    if (dexHead) dexHead.addEventListener('click', function (ev) {
+      /* 버튼 쪽 클릭은 버튼이 처리한다 (두 번 뒤집히지 않게) */
+      if (ev && ev.target === dexToggleBtn) return;
+      toggleDex();
+    });
     /* 도감 보기: 보유 / 전체 151 */
     elAll('.dex-filter').forEach(function (b) {
       b.addEventListener('click', function () { setDexView(b.getAttribute('data-dex')); });
