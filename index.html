@@ -310,7 +310,6 @@
       radial-gradient(420px 240px at 4% 108%, #FBE8EE 0%, rgba(251,232,238,0) 70%),
       #fff;
   }
-  .poke-hero{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
   .poke-art-wrap{
     flex:0 0 auto;width:150px;height:150px;
     display:grid;place-items:center;
@@ -501,15 +500,6 @@
 
   .score-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
 
-  details.more{border-top:1px dashed var(--line);padding-top:12px;}
-  details.more summary{
-    cursor:pointer;list-style:none;
-    font-size:14.5px;font-weight:800;color:#8C5568;
-    padding:6px 0;
-  }
-  details.more summary::-webkit-details-marker{display:none;}
-  details.more summary::before{content:"▸ ";font-weight:900;}
-  details.more[open] summary::before{content:"▾ ";}
   .dex-list{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px;}
   .dex-list li{
     display:flex;align-items:center;gap:6px;
@@ -579,11 +569,11 @@
   .evo-step.next{background:#FFF4D6;border-color:#FFD868;color:#8A6200;}
   .evo-arrow{color:#C9A9B5;font-size:13px;font-weight:900;}
   .evo-next{font-size:13px;font-weight:800;color:#8A6200;line-height:1.45;}
-  .egg-big{padding:15px 17px;}
+  .egg-big{padding:15px 17px;flex-wrap:wrap;}
   .egg-big .egg-emoji{font-size:44px;}
   .egg-big .egg-body b{font-size:17px;}
   .egg-big .egg-body span{font-size:14px;}
-  .egg-big .btn{flex:0 0 auto;}
+  .egg-big .btn{flex:0 0 auto;margin-left:auto;}
   .score-actions{display:flex;gap:8px;flex-wrap:wrap;}
 
   /* 도감 — 포켓몬 탭 안에서 바로 */
