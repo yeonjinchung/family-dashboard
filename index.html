@@ -260,6 +260,8 @@
   .btn-sky{background:linear-gradient(180deg,#96CCFF,#7BBFFF);color:#fff;--sc:#4E9FE8;}
   .btn-purple{background:linear-gradient(180deg,#9E2A50,#7D1D3F);color:#fff;--sc:#5E1430;}
   .btn-ghost{background:#FAF1F4;color:#5A2B38;--sc:#EDD9E1;}
+  /* 퀘스트 빼기 — 고치기 패널 안의 붉은 보조 버튼 (줄에 있던 ✕ 대신) */
+  .btn-remove{background:#FBEAEE;color:#A3203F;--sc:#F1CDD7;}
 
   /* ---------- 입력 ---------- */
   input[type="text"],input[type="number"]{
@@ -456,11 +458,6 @@
     background:var(--lemon-soft);color:#8A6200;white-space:nowrap;
   }
   .quest.done .qpt{background:#D9F5EA;color:#2E8A6F;}
-  .quest-del{
-    flex:0 0 auto;width:32px;height:32px;border-radius:11px;border:0;
-    background:transparent;color:#CBB3BC;font-size:15px;font-weight:900;cursor:pointer;
-  }
-  .quest-del:active{background:#F8EEF1;}
   .quest-edit{
     flex:0 0 auto;width:30px;height:30px;border-radius:10px;border:0;
     background:#F1DDE7;color:#7D1D3F;font-size:14px;font-weight:900;cursor:pointer;
@@ -807,6 +804,7 @@
   .edit-time-row .btn{flex:0 0 auto;}
   .edit-actions{display:flex;gap:8px;margin-top:6px;}
   .edit-actions .btn{flex:1 1 0;}
+  .edit-actions .btn-remove{flex:0 0 auto;}
 
   /* ---------- 안내 ---------- */
   .guide{margin-top:16px;background:rgba(255,255,255,.7);border-radius:20px;padding:14px 18px;box-shadow:var(--shadow);}
@@ -966,6 +964,7 @@
           <label class="edit-label">포인트</label>
           <div class="pts-picker" id="questEditPts"></div>
           <div class="edit-actions">
+            <button class="btn btn-remove" id="questEditDelete" type="button">🗑 빼기</button>
             <button class="btn btn-ghost" id="questEditCancel" type="button">취소</button>
             <button class="btn btn-purple" id="questEditSave" type="button">저장</button>
           </div>
@@ -1126,7 +1125,7 @@
         <li>화면 위 <b>🏡 가족 홈</b>·<b>⚡ 포켓몬</b> 탭으로 화면을 바꿔요. 홈에는 달력·오늘의 퀘스트·해주세요 리스트·한마디가, 포켓몬 탭에는 크게 키우는 파트너와 <b>📖 도감</b>이 있어요. <b>📖 도감</b>은 처음엔 접혀 있고, <b>도감 펼치기 ▾</b>를 누르면 보유한 포켇몬과 전체 152마리(관동 151마리 + 무한다이노)가 펼쳐져요. 다시 누르면 접혀요. 퀘스트를 체크하면 포켓몬 탭 뱃지와 경험치가 바로 바뀌어요.</li>
         <li>아이폰·아이패드 <b>사파리</b>에서 열고 <b>공유 → 홈 화면에 추가</b>를 누르면 앱처럼 전체 화면으로 열려요.</li>
         <li><b>⚡ 포켓몬 키우기</b>는 <b>파트너 변경</b>이나 <b>도감</b>에서 잡은 포켓몬을 눌러 파트너를 바꿀 수 있어요. <b>오늘의 퀘스트</b>를 체크할 때마다 그 파트너에게 경험치가 쌓이고, 경험치가 차면 레벨업해요. 진화는 실제 도감 순서대로 <b>1차 Lv.5 · 2차 Lv.10</b>이고, 종마다 레벨이 따로 남아서 바꿔 가며 키울 수 있어요.</li>
-        <li><b>🗓 요일 탭</b>은 <b>오늘의 퀘스트</b> 제목 바로 아래 <b>월~일</b> 탭이에요. 다른 요일을 누르면 그 요일 퀘스트를 미리 볼 수 있고, 아래 입력창으로 그 요일 루틴에 바로 넣거나 <b>✕</b>로 뺄 수 있어요. 체크와 경험치는 <b>오늘 탭</b>에서만 되고, 다른 요일을 보는 동안에는 자물쇠로 잠겨 있어요. <b>매일</b>을 고르면 일주일 모두에 들어가요. 뺐던 기본 항목은 <b>기본 복원</b>으로 다시 채웁니다.</li>
+        <li><b>🗓 요일 탭</b>은 <b>오늘의 퀘스트</b> 제목 바로 아래 <b>월~일</b> 탭이에요. 다른 요일을 누르면 그 요일 퀘스트를 미리 볼 수 있고, 아래 입력창으로 그 요일 루틴에 바로 넣을 수 있어요. 퀘스트를 고치거나 뺄 때는 <b>✏️</b>를 눌러요. 체크와 경험치는 <b>오늘 탭</b>에서만 되고, 다른 요일을 보는 동안에는 자물쇠로 잠겨 있어요. <b>매일</b>을 고르면 일주일 모두에 들어가요. 뺐던 기본 항목은 <b>기본 복원</b>으로 다시 채웁니다.</li>
         <li><b>🥚 올클리어 알</b>은 오늘 퀘스트를 <b>모두</b> 체크하면 하루 한 번 부화해요. 아직 도감에 없는 포켓몬이 등록되고 보너스 경험치도 받아요.</li>
         <li><b>📅 가족 달력</b>은 날짜를 누른 뒤 시간·내용·담당(👩🏻 연진 / 👶🏻 로건 / 👦🏻 지민 / 🏡 함께)을 골라 <b>＋ 일정 추가</b>를 누르면 돼요. 담긴 일정을 누르면(또는 <b>✏️</b>) 시간·내용·담당을 다시 고칠 수 있어요.</li>
         <li><b>🛒 해주세요 리스트</b>는 <b>장보기</b>·<b>사주세요</b>·<b>빌려다 주세요</b> 셋으로 나눠 담고, 부탁한 사람을 골라 둘 수 있어요. 한 것은 눌러서 체크하고 <b>완료 비우기</b>로 정리해요.</li>
@@ -2521,14 +2520,7 @@
           if (today) toggleQuest(it); else previewLocked();
         });
 
-        var del = document.createElement('button');
-        del.type = 'button';
-        del.className = 'quest-del';
-        del.textContent = '✕';
-        del.setAttribute('aria-label', it.title + ' ' + viewDay + '요일 퀘스트 빼기');
-        del.addEventListener('click', function () { deleteQuest(it); });
-
-        /* 이름·부제/시간·포인트를 고치는 버튼 (체크는 그대로 체크) */
+        /* 이름·부제/시간·포인트를 고치는 버튼 (체크는 그대로 체크, 빼기는 이 패널 안에서) */
         var edit = document.createElement('button');
         edit.type = 'button';
         edit.className = 'quest-edit';
@@ -2537,7 +2529,6 @@
         edit.addEventListener('click', function () { openQuestEdit(it.id); });
 
         li.appendChild(main);
-        li.appendChild(del);
         li.appendChild(edit);
         list.appendChild(li);
       })(items[i]);
@@ -2622,9 +2613,9 @@
     checkEgg();
   }
 
-  /* 퀘스트 지우기 = 지금 보고 있는 요일 루틴에서 빼기 (다음 주 같은 요일에도 안 나온다) */
-  function deleteQuest(it) {
-    var day = viewDay;
+  /* 퀘스트 지우기 = 그 퀘스트가 들어 있던 요일 루틴에서 빼기 (다음 주 같은 요일에도 안 나온다) */
+  function deleteQuest(it, dayOpt) {
+    var day = dayOpt || viewDay;
     if (qEditId && qEditId === it.id) closeQuestEdit();
     if (it.oneshot) {
       state.quests.today = (state.quests.today || []).filter(function (c) { return c.id !== it.id; });
@@ -2640,6 +2631,24 @@
     toast(it.oneshot
       ? '오늘만 퀘스트를 지웠어요'
       : day + '요일 루틴에서 뺐어요 · 다른 요일은 그대로');
+  }
+
+  /* 고치기 패널의 🗑 빼기 — 지금 고치던 퀘스트를 그 퀘스트가 있던 요일 기준으로 뺀다 */
+  function deleteQuestFromEdit() {
+    if (!qEditId) return;
+    var found = findQuestRecord(qEditId);
+    if (!found) {
+      closeQuestEdit();
+      toast('이미 없어진 퀘스트예요');
+      renderQuests();
+      return;
+    }
+    deleteQuest({
+      id: found.item.id,
+      title: found.item.title,
+      points: found.item.points,
+      oneshot: found.where === 'today'
+    }, found.where === 'today' ? todayName() : (found.day || viewDay));
   }
 
   /* ---------- 퀘스트 고치기 (이름 · 부제/시간 · 포인트) ---------- */
@@ -4320,6 +4329,8 @@
     if (qEditSave) qEditSave.addEventListener('click', saveQuestEdit);
     var qEditCancel = el('#questEditCancel');
     if (qEditCancel) qEditCancel.addEventListener('click', closeQuestEdit);
+    var qEditDelete = el('#questEditDelete');
+    if (qEditDelete) qEditDelete.addEventListener('click', deleteQuestFromEdit);
     var qNameIn = el('#questEditName');
     if (qNameIn) qNameIn.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') { e.preventDefault(); saveQuestEdit(); }
